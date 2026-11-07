@@ -33,7 +33,7 @@ You will very likely not be able to do this unless you read a good part of at le
 5. Combine all the different branches into the master branch. You will get at least one "merge conflict", which you have to resolve intelligently: consider which of the conflicting edits is more "valuable". Note that you should not blindly merge all branches you find, because some branches are "parents" of other branches.
 
 ### After You Merge
-6. Can you find out what part of the resulting code was created by what character? You could browse commits in *GitHub*, you could use *GitHub*'s "blame" function, and you can use `git blame`. Get familiar with all of them.
+6. Push your merged `master` to your fork (`git push`). Can you find out what part of the resulting code was created by what character? You could browse commits in *GitHub*, you could use *GitHub*'s "blame" function, and you can use `git blame`. Get familiar with all of them.
 
 ### Rendering
 
