@@ -295,6 +295,13 @@
   .words li.miss span { color: var(--muted); text-decoration: line-through; }
   .words li.miss b { color: var(--muted); }
 
+  .handoff-hint { display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--muted); font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .handoff-hint svg { width: 18px; height: 18px; }
+  .liveword { display: grid; gap: 2px; justify-items: center; text-align: center; padding: 12px 14px; border-radius: 16px; background: var(--surface); border: 2px solid var(--team); }
+  .liveword b { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 9vw, 40px); line-height: 1.05; text-wrap: balance; overflow-wrap: anywhere; }
+  .liveword b.long { font-size: clamp(22px, 6.5vw, 30px); }
+  .liveword.fresh { animation: nudge .35s ease-in-out 3; }
+
   /* Win */
   .win { padding: 28px 20px; border-radius: 22px; background: var(--team); color: var(--on-color); display: grid; gap: 6px; text-align: center; position: relative; overflow: hidden; }
   .win .eyebrow { color: inherit; opacity: .85; }
@@ -483,6 +490,7 @@
   // ---------------------------------------------------------------- Game flow
   function newTurn() {
     state.turn = { mode: rand(MODE_KEYS), level: 2, word: null, open: false, revealed: false, swapped: false, remaining: state.roundTime * 1000, timeUp: false, lastOpen: false, results: [] };
+    state.turn.open = state.openRounds && state.teams.length > 1 && Math.random() < OPEN_CHANCE;
     state.phase = "turn";
   }
   function pickWord(level, avoid) {
@@ -510,7 +518,7 @@
     t.word = pickWord(t.level, t.word);
     strokes = [];
     render();
-    const p = document.getElementById("peek");
+    const p = document.getElementById("peek") || document.getElementById("liveword");
     if (p) { p.classList.add("fresh"); setTimeout(() => p.classList.remove("fresh"), 1800); }
   }
   function timeUp() {
@@ -551,18 +559,11 @@
     },
     level(l) { state.turn.level = Number(l); render(); },
     draw() {
-      const t = state.turn;
-      t.word = pickWord(t.level);
-      t.open = state.openRounds && state.teams.length > 1 && Math.random() < OPEN_CHANCE;
-      t.revealed = false;
-      state.phase = "reveal"; render();
+      ensureAudio();
+      state.turn.word = pickWord(state.turn.level);
+      state.phase = "play"; strokes = [];
+      render(); startTimer(); beep(660, 0.08, 0, 0.2);
     },
-    uncover() { state.turn.revealed = true; render(); },
-    swap() {
-      const t = state.turn; if (t.swapped) return;
-      t.word = pickWord(t.level, t.word); t.swapped = true; render();
-    },
-    go() { state.phase = "play"; strokes = []; render(); startTimer(); beep(660, 0.08, 0, 0.2); },
     // play
     pause() { togglePause(); },
     guessed(arg) {
@@ -651,9 +652,9 @@
         <summary>So wird gespielt</summary>
         <ol>
           <li>Das Team am Zug wählt die <b>Darstellung</b> (oder würfelt) und die <b>Schwierigkeit</b>: leicht 1, mittel 2, schwer 3 Punkte.</li>
-          <li>Eine Person aus dem Team schaut sich den ersten Begriff allein an und darf ihn einmal tauschen.</li>
+          <li>Eine Person aus dem Team nimmt das Handy und tippt auf <b>Aufdecken &amp; los</b>: Der erste Begriff erscheint und die Zeit läuft.</li>
           <li>Dann läuft die Zeit: <b>erklären</b>, <b>zeichnen</b> oder <b>pantomimisch</b> darstellen. Das eigene Team rät <b>so viele Begriffe wie möglich</b>.</li>
-          <li>Jeder erratene Begriff bringt die Punkte seiner Stufe, danach kommt sofort der nächste. Den Begriff sieht man, solange man den Knopf gedrückt hält. Überspringen kostet keine Punkte, nur Zeit.</li>
+          <li>Jeder erratene Begriff bringt die Punkte seiner Stufe, danach kommt sofort der nächste. Beim Erklären steht der Begriff auf dem Bildschirm, beim Zeichnen und bei Pantomime sieht man ihn, solange man den Knopf gedrückt hält. Überspringen kostet keine Punkte, nur Zeit.</li>
           <li>Danach ist das nächste Team dran, am besten mit einer anderen Person. Das erste Team mit der Zielpunktzahl gewinnt sofort.</li>
         </ol>
       </details>
@@ -675,6 +676,7 @@
           ${MODE_KEYS.map((m) => `<button class="chip" role="radio" id="mode-${m}" aria-checked="${tr.mode === m}" data-act="mode" data-arg="${m}">${ICONS[m]}${MODES[m].name}</button>`).join("")}
           <button class="chip dice" data-act="roll" aria-label="Darstellung auswürfeln">${ICONS.dice}Würfeln</button>
         </div>
+        <p class="rule" style="margin-top:8px">${MODES[tr.mode].rule}</p>
       </section>
       <section>
         <h3 class="h">Schwierigkeit</h3>
@@ -682,37 +684,9 @@
           ${[1, 2, 3].map((l) => `<button class="level" role="radio" id="level-${l}" aria-checked="${tr.level === l}" data-act="level" data-arg="${l}"><b>${l}</b><span>${LEVELS[l]}</span></button>`).join("")}
         </div>
       </section>
-      <section class="panel"><h3 class="h">Punktestand</h3>${scoreboard(false)}</section>
+      ${tr.open ? `<div class="open-banner">${ICONS.all}<div><b>Offene Runde</b><small>Alle Teams dürfen raten. Jeder Begriff zählt für das Team, das ihn zuerst errät.</small></div></div>` : ""}
       <div class="grow"></div>
-      <div class="cta"><button class="btn btn-team t-${t.c}" data-act="draw">Begriff ziehen</button></div>`;
-    },
-
-    reveal() {
-      const t = team(), tr = state.turn, m = MODES[tr.mode];
-      const openBanner = tr.open ? `<div class="open-banner">${ICONS.all}<div><b>Offene Runde</b><small>Alle Teams dürfen raten. Jeder Begriff bringt dem Team, das ihn zuerst errät, ${pts(tr.level)}.</small></div></div>` : "";
-      if (!tr.revealed) {
-        return `
-        ${bar(esc(t.name))}
-        <div class="handoff t-${t.c}">
-          ${ICONS.phone}
-          <h2>Gib das Handy der Person, die darstellt</h2>
-          <p class="muted">Nur sie darf den Begriff sehen. ${m.name}, ${LEVELS[tr.level].toLowerCase()}, ${pts(tr.level)} je Begriff.</p>
-        </div>
-        ${openBanner}
-        <button class="btn btn-team t-${t.c}" data-act="uncover">${ICONS.eye} Begriff aufdecken</button>`;
-      }
-      return `
-      ${bar(esc(t.name))}
-      <div class="card t-${t.c}">
-        <div class="card-top"><span class="mode">${ICONS[tr.mode]}${m.name}</span><span class="pts">${pts(tr.level)} je Begriff</span></div>
-        <div class="word${tr.word.length > 16 ? " long" : ""}">${esc(tr.word)}</div>
-        <p class="rule">${m.rule}</p>
-      </div>
-      ${openBanner}
-      <div class="row">
-        <button class="btn btn-ghost" data-act="swap" ${tr.swapped ? "disabled" : ""}>${tr.swapped ? "Getauscht" : "Tauschen"}</button>
-        <button class="btn btn-team t-${t.c}" data-act="go">Los · ${state.roundTime} s</button>
-      </div>`;
+      <div class="cta"><p class="handoff-hint">${ICONS.phone}Handy an die Person geben, die darstellt</p><button class="btn btn-team t-${t.c}" data-act="draw">Aufdecken &amp; los · ${state.roundTime} s</button></div>`;
     },
 
     play() {
@@ -751,8 +725,10 @@
           <span class="readout"><span class="eyebrow">${m.name}</span><span class="time" id="time">${fmt(tr.remaining)}</span><span class="hint" id="thint"></span></span>
         </button>
       </div>
-      <p class="rule">${m.rule}</p>
-      ${peek}${btns}`;
+      ${tr.mode === "erklaeren"
+        ? `<div class="liveword t-${t.c}" id="liveword"><span class="eyebrow">Begriff</span><b class="${tr.word.length > 16 ? "long" : ""}">${esc(tr.word)}</b></div>`
+        : `<p class="rule">${m.rule}</p>${peek}`}
+      ${btns}`;
     },
 
     result() {
@@ -929,6 +905,7 @@
     if (state.phase !== "setup" && !state.turn) newTurn();
     if (state.turn && !Array.isArray(state.turn.results)) { state.turn.results = []; state.turn.lastOpen = false; }
     if (state.phase === "win" && state.winner === null) state.phase = "setup";
+    if (state.phase === "reveal") state.phase = "turn";
     running = false;   // a restored round starts paused
     render();
   }
