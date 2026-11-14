@@ -281,6 +281,20 @@
   .pick .btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .panel { padding: 16px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); }
 
+  .tally { text-align: center; color: var(--muted); font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; margin-bottom: -6px; }
+  .openpick { display: grid; gap: 8px; }
+  .pick3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; }
+  .pick3 .btn { min-height: 52px; font-size: 15px; padding: 0 10px; }
+  .pick3 .btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .peek.fresh { border-style: solid; border-color: var(--team); color: var(--team); animation: nudge .35s ease-in-out 3; }
+  @keyframes nudge { 50% { transform: scale(1.03); } }
+  .words { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .words li { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 12px; border-radius: 12px; background: var(--bg); }
+  .words li span { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+  .words li b { flex: none; font-family: var(--font-display); font-size: 16px; color: var(--team); }
+  .words li.miss span { color: var(--muted); text-decoration: line-through; }
+  .words li.miss b { color: var(--muted); }
+
   /* Win */
   .win { padding: 28px 20px; border-radius: 22px; background: var(--team); color: var(--on-color); display: grid; gap: 6px; text-align: center; position: relative; overflow: hidden; }
   .win .eyebrow { color: inherit; opacity: .85; }
@@ -361,7 +375,7 @@
     phase: "setup",
     teams: TEAMS.slice(0, 2).map((t) => ({ ...t, score: 0 })),
     current: 0, round: 1, turnsTaken: 0,
-    roundTime: 60, target: 25, openRounds: true, sound: true,
+    roundTime: 60, target: 50, openRounds: true, sound: true,
     used: { 1: [], 2: [], 3: [] },
     turn: null, winner: null
   });
@@ -468,7 +482,7 @@
 
   // ---------------------------------------------------------------- Game flow
   function newTurn() {
-    state.turn = { mode: rand(MODE_KEYS), level: 2, word: null, open: false, revealed: false, swapped: false, remaining: state.roundTime * 1000, timeUp: false, outcome: null };
+    state.turn = { mode: rand(MODE_KEYS), level: 2, word: null, open: false, revealed: false, swapped: false, remaining: state.roundTime * 1000, timeUp: false, lastOpen: false, results: [] };
     state.phase = "turn";
   }
   function pickWord(level, avoid) {
@@ -478,19 +492,30 @@
     state.used[level].push(w);
     return w;
   }
-  function award(idx) {
+  function score(idx) {
     const t = state.turn;
-    t.outcome = { team: idx };
-    if (idx !== null) state.teams[idx].score += t.level;
+    state.teams[idx].score += t.level;
+    t.results.push({ word: t.word, team: idx });
+    ding(); buzz(60);
+    if (state.teams[idx].score >= state.target) { state.winner = idx; return true; }
+    return false;
+  }
+  function finishRound() {
     stopTimer(); unlockScreen();
+    state.turn.lastOpen = false;
     state.phase = "result";
-    if (idx !== null) { ding(); buzz(60); }
-    const leader = state.teams.findIndex((x) => x.score >= state.target);
-    if (leader !== -1) { state.winner = leader; }
+  }
+  function nextWord() {
+    const t = state.turn;
+    t.word = pickWord(t.level, t.word);
+    strokes = [];
+    render();
+    const p = document.getElementById("peek");
+    if (p) { p.classList.add("fresh"); setTimeout(() => p.classList.remove("fresh"), 1800); }
   }
   function timeUp() {
     running = false; cancelAnimationFrame(raf); clearTimeout(endTimer);
-    state.turn.remaining = 0; state.turn.timeUp = true;
+    state.turn.remaining = 0; state.turn.timeUp = true; state.turn.lastOpen = true;
     unlockScreen(); alarm(); buzz([400, 150, 400, 150, 800]);
     state.phase = "result";
     render();
@@ -540,14 +565,26 @@
     go() { state.phase = "play"; strokes = []; render(); startTimer(); beep(660, 0.08, 0, 0.2); },
     // play
     pause() { togglePause(); },
-    guessed() {
-      stopTimer();
-      if (state.turn.open) { state.phase = "result"; render(); }
-      else { award(state.current); render(); }
+    guessed(arg) {
+      if (!running && state.turn.remaining <= 0) return;
+      const idx = arg === undefined ? state.current : Number(arg);
+      if (score(idx)) { finishRound(); render(); return; }
+      nextWord();
     },
-    giveUp() { stopTimer(); award(null); render(); },
+    skip() {
+      const t = state.turn;
+      t.results.push({ word: t.word, team: null });
+      beep(330, 0.08, 0, 0.15, "triangle");
+      nextWord();
+    },
+    stopRound() { closeMenu(); resumeAfterMenu = false; finishRound(); render(); },
     // result
-    winner(i) { award(i === "none" ? null : Number(i)); render(); },
+    last(arg) {
+      const t = state.turn;
+      if (arg === "none") t.results.push({ word: t.word, team: null });
+      else score(Number(arg));
+      t.lastOpen = false; render();
+    },
     next() {
       if (state.winner !== null) { state.phase = "win"; fanfare(); render(); return; }
       state.turnsTaken++;
@@ -605,19 +642,19 @@
         </div>
       </section>
       <section><h2 class="h">Zeit pro Runde</h2>${seg("setTime", state.roundTime, [[60, "60", "s"], [120, "120", "s"]])}</section>
-      <section><h2 class="h">Spiellänge</h2>${seg("setTarget", state.target, [[15, "15", "Pkt."], [25, "25", "Pkt."], [40, "40", "Pkt."]])}</section>
+      <section><h2 class="h">Spiellänge</h2>${seg("setTarget", state.target, [[30, "30", "Pkt."], [50, "50", "Pkt."], [80, "80", "Pkt."]])}</section>
       <button class="switch-row" id="openRounds" role="switch" aria-checked="${state.openRounds}" data-act="toggleOpen">
-        <div><b>Offene Runden</b><small>Ab und zu dürfen alle Teams mitraten. Das schnellste Team bekommt die Punkte.</small></div>
+        <div><b>Offene Runden</b><small>Ab und zu dürfen alle Teams mitraten. Jeder Begriff zählt für das Team, das ihn zuerst errät.</small></div>
         <span class="switch"></span>
       </button>
       <details class="rules" id="rules">
         <summary>So wird gespielt</summary>
         <ol>
           <li>Das Team am Zug wählt die <b>Darstellung</b> (oder würfelt) und die <b>Schwierigkeit</b>: leicht 1, mittel 2, schwer 3 Punkte.</li>
-          <li>Eine Person aus dem Team schaut sich den Begriff allein an und darf ihn einmal tauschen.</li>
-          <li>Dann läuft die Zeit: <b>erklären</b>, <b>zeichnen</b> oder <b>pantomimisch</b> darstellen. Das eigene Team rät.</li>
-          <li>Erraten vor Ablauf der Zeit bringt die Punkte. Danach ist das nächste Team dran, am besten mit einer anderen Person.</li>
-          <li>Das erste Team mit der Zielpunktzahl gewinnt.</li>
+          <li>Eine Person aus dem Team schaut sich den ersten Begriff allein an und darf ihn einmal tauschen.</li>
+          <li>Dann läuft die Zeit: <b>erklären</b>, <b>zeichnen</b> oder <b>pantomimisch</b> darstellen. Das eigene Team rät <b>so viele Begriffe wie möglich</b>.</li>
+          <li>Jeder erratene Begriff bringt die Punkte seiner Stufe, danach kommt sofort der nächste. Den Begriff sieht man, solange man den Knopf gedrückt hält. Überspringen kostet keine Punkte, nur Zeit.</li>
+          <li>Danach ist das nächste Team dran, am besten mit einer anderen Person. Das erste Team mit der Zielpunktzahl gewinnt sofort.</li>
         </ol>
       </details>
       <button class="btn btn-primary" data-act="start">Spiel starten</button>`;
@@ -652,14 +689,14 @@
 
     reveal() {
       const t = team(), tr = state.turn, m = MODES[tr.mode];
-      const openBanner = tr.open ? `<div class="open-banner">${ICONS.all}<div><b>Offene Runde</b><small>Alle Teams dürfen raten. Wer zuerst richtig liegt, bekommt ${pts(tr.level)}.</small></div></div>` : "";
+      const openBanner = tr.open ? `<div class="open-banner">${ICONS.all}<div><b>Offene Runde</b><small>Alle Teams dürfen raten. Jeder Begriff bringt dem Team, das ihn zuerst errät, ${pts(tr.level)}.</small></div></div>` : "";
       if (!tr.revealed) {
         return `
         ${bar(esc(t.name))}
         <div class="handoff t-${t.c}">
           ${ICONS.phone}
           <h2>Gib das Handy der Person, die darstellt</h2>
-          <p class="muted">Nur sie darf den Begriff sehen. ${m.name}, ${LEVELS[tr.level].toLowerCase()}, ${pts(tr.level)}.</p>
+          <p class="muted">Nur sie darf den Begriff sehen. ${m.name}, ${LEVELS[tr.level].toLowerCase()}, ${pts(tr.level)} je Begriff.</p>
         </div>
         ${openBanner}
         <button class="btn btn-team t-${t.c}" data-act="uncover">${ICONS.eye} Begriff aufdecken</button>`;
@@ -667,7 +704,7 @@
       return `
       ${bar(esc(t.name))}
       <div class="card t-${t.c}">
-        <div class="card-top"><span class="mode">${ICONS[tr.mode]}${m.name}</span><span class="pts">${pts(tr.level)}</span></div>
+        <div class="card-top"><span class="mode">${ICONS[tr.mode]}${m.name}</span><span class="pts">${pts(tr.level)} je Begriff</span></div>
         <div class="word${tr.word.length > 16 ? " long" : ""}">${esc(tr.word)}</div>
         <p class="rule">${m.rule}</p>
       </div>
@@ -683,7 +720,11 @@
       const head = `<div class="playhead"><span class="tag t-${t.c}"><span>${esc(t.name)}</span></span><span class="modechip">${ICONS[tr.mode]}${m.name} · ${pts(tr.level)}${tr.open ? " · offen" : ""}</span>`;
       const menuBtn = `<button class="icon-btn" data-act="menu" aria-label="Menü">${ICONS.menu}</button>`;
       const peek = `<button class="peek t-${t.c}" id="peek">${ICONS.eye}<span>Gedrückt halten: Begriff zeigen</span></button>`;
-      const btns = `<div class="row"><button class="btn btn-ghost" data-act="giveUp">Aufgeben</button><button class="btn btn-ok" data-act="guessed">Erraten!</button></div>`;
+      const got = tr.results.filter((r) => r.team !== null).length;
+      const tally = `<p class="tally">${got ? `Diese Runde: ${got} erraten · +${got * tr.level} Punkte` : `Erratet so viele Begriffe wie möglich · ${pts(tr.level)} je Begriff`}</p>`;
+      const btns = tally + (tr.open
+        ? `<div class="openpick"><p class="eyebrow">Erraten hat</p><div class="pick3">${state.teams.map((x, i) => `<button class="btn btn-team t-${x.c}" data-act="guessed" data-arg="${i}"><span>${esc(x.name)}</span></button>`).join("")}</div><button class="btn btn-ghost" data-act="skip">Überspringen</button></div>`
+        : `<div class="row"><button class="btn btn-ghost" data-act="skip">Überspringen</button><button class="btn btn-ok" data-act="guessed">Erraten!</button></div>`);
       if (tr.mode === "zeichnen") {
         return `
         ${head}<button class="time-pill" data-act="pause" aria-label="Pause"><span class="time" id="time">${fmt(tr.remaining)}</span><span class="hint" id="thint"></span></button>${menuBtn}</div>
@@ -715,32 +756,40 @@
     },
 
     result() {
-      const t = team(), tr = state.turn;
-      let head, body = "";
-      if (!tr.outcome) {
-        if (tr.open) {
-          head = `<div class="result-head${tr.timeUp ? " timeup" : ""}"><p class="eyebrow">${tr.timeUp ? "Zeit um" : "Offene Runde"}</p><h2>Welches Team hat zuerst richtig geraten?</h2></div>`;
-          body = `<div class="pick">${state.teams.map((x, i) => `<button class="btn btn-team t-${x.c}" data-act="winner" data-arg="${i}"><span>${esc(x.name)}</span></button>`).join("")}<button class="btn btn-ghost" data-act="winner" data-arg="none">Niemand</button></div>`;
-        } else {
-          head = `<div class="result-head timeup"><p class="eyebrow">Zeit um</p><h2>Wurde der Begriff noch rechtzeitig erraten?</h2></div>`;
-          body = `<div class="row-even"><button class="btn btn-ghost" data-act="winner" data-arg="none">Nein</button><button class="btn btn-ok" data-act="winner" data-arg="${state.current}">Ja, erraten</button></div>`;
-        }
-      } else {
-        const w = tr.outcome.team;
-        head = w === null
-          ? `<div class="result-head${tr.timeUp ? " timeup" : ""}"><p class="eyebrow">${tr.timeUp ? "Zeit um" : "Aufgegeben"}</p><h2>Keine Punkte in dieser Runde</h2></div>`
-          : `<div class="result-head good"><p class="eyebrow">Erraten</p><h2>+${pts(tr.level)} für ${esc(team(w).name)}</h2></div>`;
-        const nextTeam = team((state.current + 1) % state.teams.length);
-        body = `<section class="panel"><h3 class="h">Punktestand</h3>${scoreboard(false)}</section><div class="grow"></div>
-          ${state.winner !== null
-            ? `<button class="btn btn-team t-${team(state.winner).c}" data-act="next">Zur Siegerehrung</button>`
-            : `<button class="btn btn-team t-${nextTeam.c}" data-act="next">Weiter: ${esc(nextTeam.name)}</button>`}`;
+      const t = team(), tr = state.turn, lv = tr.level;
+      const got = tr.results.filter((r) => r.team !== null);
+      const list = tr.results.length ? `<section class="panel"><h3 class="h">Begriffe dieser Runde</h3><ul class="words">${tr.results.map((r) => `<li class="${r.team === null ? "miss" : "hit t-" + team(r.team).c}"><span>${esc(r.word)}</span><b>${r.team === null ? "–" : (tr.open ? esc(team(r.team).name) + " +" : "+") + lv}</b></li>`).join("")}</ul></section>` : "";
+      if (tr.lastOpen) {
+        const body = tr.open
+          ? `<div class="pick">${state.teams.map((x, i) => `<button class="btn btn-team t-${x.c}" data-act="last" data-arg="${i}"><span>${esc(x.name)}</span></button>`).join("")}<button class="btn btn-ghost" data-act="last" data-arg="none">Niemand</button></div>`
+          : `<div class="row-even"><button class="btn btn-ghost" data-act="last" data-arg="none">Nein</button><button class="btn btn-ok" data-act="last" data-arg="${state.current}">Ja, erraten</button></div>`;
+        return `
+        ${bar(esc(t.name))}
+        <div class="result-head timeup"><p class="eyebrow">Zeit um</p><h2>${tr.open ? "Hat ein Team" : "Wurde"} „${esc(tr.word)}“ noch rechtzeitig erraten?</h2></div>
+        ${body}
+        ${list}`;
       }
+      let head;
+      if (state.winner !== null) {
+        head = `<div class="result-head good"><p class="eyebrow">Ziel erreicht</p><h2>${esc(team(state.winner).name)} hat ${state.teams[state.winner].score} Punkte!</h2></div>`;
+      } else if (got.length) {
+        const n = got.length + (got.length === 1 ? " Begriff" : " Begriffe");
+        head = tr.open
+          ? `<div class="result-head good"><p class="eyebrow">${tr.timeUp ? "Zeit um" : "Runde beendet"}</p><h2>${n} erraten</h2></div>`
+          : `<div class="result-head good"><p class="eyebrow">${tr.timeUp ? "Zeit um" : "Runde beendet"} · ${n} erraten</p><h2>+${pts(got.length * lv)} für ${esc(t.name)}</h2></div>`;
+      } else {
+        head = `<div class="result-head"><p class="eyebrow">${tr.timeUp ? "Zeit um" : "Runde beendet"}</p><h2>Keine Punkte in dieser Runde</h2></div>`;
+      }
+      const nextTeam = team((state.current + 1) % state.teams.length);
       return `
       ${bar(esc(t.name))}
       ${head}
-      <div class="answer"><p class="eyebrow">Der Begriff war</p><p class="word">${esc(tr.word)}</p><p class="muted">${MODES[tr.mode].name} · ${LEVELS[tr.level]} · ${pts(tr.level)}</p></div>
-      ${body}`;
+      ${list}
+      <section class="panel"><h3 class="h">Punktestand</h3>${scoreboard(false)}</section>
+      <div class="grow"></div>
+      ${state.winner !== null
+        ? `<button class="btn btn-team t-${team(state.winner).c}" data-act="next">Zur Siegerehrung</button>`
+        : `<button class="btn btn-team t-${nextTeam.c}" data-act="next">Weiter: ${esc(nextTeam.name)}</button>`}`;
     },
 
     win() {
@@ -775,6 +824,7 @@
         <section class="panel"><h3 class="h">Regeln kurz</h3>
           <p class="muted"><b>Erklären:</b> ${MODES.erklaeren.rule}<br><b>Zeichnen:</b> ${MODES.zeichnen.rule}<br><b>Pantomime:</b> ${MODES.pantomime.rule}</p>
         </section>
+        ${state.phase === "play" ? `<button class="btn btn-ghost" data-act="stopRound">Runde jetzt beenden</button>` : ""}
         <button class="btn btn-ghost${confirmEnd ? " danger" : ""}" data-act="endGame">${confirmEnd ? "Wirklich beenden? Nochmal tippen" : "Spiel beenden"}</button>` : ""}
         <button class="btn btn-primary" data-act="closeMenu">${state.phase === "play" ? "Weiterspielen" : "Schließen"}</button>
       </div>`;
@@ -877,6 +927,7 @@
   function boot(data) {
     load(data);
     if (state.phase !== "setup" && !state.turn) newTurn();
+    if (state.turn && !Array.isArray(state.turn.results)) { state.turn.results = []; state.turn.lastOpen = false; }
     if (state.phase === "win" && state.winner === null) state.phase = "setup";
     running = false;   // a restored round starts paused
     render();
