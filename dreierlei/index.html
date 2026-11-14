@@ -118,6 +118,19 @@
     font-family: var(--font-display); font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; cursor: pointer;
   }
   .seg button small { font: 600 12px var(--font-body); margin-left: 3px; }
+  .stepper { display: grid; grid-template-columns: 52px 1fr 52px; gap: 8px; align-items: center; }
+  .stepper .icon-btn { width: 52px; height: 52px; font-size: 24px; font-weight: 700; }
+  .step-val { display: flex; align-items: baseline; justify-content: center; gap: 6px; height: 52px; padding: 0 12px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); cursor: text; }
+  .step-val:focus-within { border-color: var(--accent); }
+  .step-val input {
+    width: 4.2ch; min-width: 0; border: 0; background: transparent; color: var(--ink); outline: none; text-align: right;
+    font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: 50px; font-variant-numeric: tabular-nums; -moz-appearance: textfield;
+  }
+  .step-val input::-webkit-inner-spin-button, .step-val input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .step-val span { color: var(--muted); font-weight: 600; font-size: 14px; }
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .preset { min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; cursor: pointer; }
+  .preset[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
   .seg button[aria-checked="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgb(0 0 0 / .12); }
 
   .modes { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 8px; }
@@ -375,6 +388,11 @@
     { name: "Team Gelb", c: "yellow" }, { name: "Team Lila", c: "violet" }, { name: "Team Türkis", c: "cyan" }
   ];
   const OPEN_CHANCE = 1 / 6;
+  const LIMITS = { roundTime: [10, 900], target: [1, 999] };
+  function clampSetting(k, v) {
+    const [lo, hi] = LIMITS[k]; const n = Math.round(Number(v));
+    return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : (k === "roundTime" ? 120 : 50);
+  }
 
   // ---------------------------------------------------------------- State
   const KEY = "dreierlei:v1";
@@ -382,7 +400,7 @@
     phase: "setup",
     teams: TEAMS.slice(0, 2).map((t) => ({ ...t, score: 0 })),
     current: 0, round: 1, turnsTaken: 0,
-    roundTime: 60, target: 50, openRounds: true, sound: true,
+    roundTime: 120, target: 50, openRounds: true, sound: true, cfg: 2,
     used: { 1: [], 2: [], 3: [] },
     turn: null, winner: null
   });
@@ -402,7 +420,10 @@
   function load(data) {
     let s = data && data.state;
     if (!s) { try { s = JSON.parse(localStorage.getItem(KEY) || "null"); } catch { s = null; } }
-    if (s && s.phase && Array.isArray(s.teams) && s.teams.length >= 2) state = { ...fresh(), ...s };
+    if (s && s.phase && Array.isArray(s.teams) && s.teams.length >= 2) {
+      if (s.cfg !== 2) { s.roundTime = 120; s.target = 50; s.cfg = 2; }
+      state = { ...fresh(), ...s };
+    }
   }
 
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -533,8 +554,9 @@
     // setup
     addTeam() { if (state.teams.length < 6) { const free = TEAMS.find((p) => !state.teams.some((t) => t.c === p.c)); state.teams.push({ ...free, score: 0 }); render(); } },
     removeTeam(i) { if (state.teams.length > 2) { state.teams.splice(Number(i), 1); render(); } },
-    setTime(v) { state.roundTime = Number(v); render(); },
-    setTarget(v) { state.target = Number(v); render(); },
+    setTime(v) { state.roundTime = clampSetting("roundTime", v); render(); },
+    setTarget(v) { state.target = clampSetting("target", v); render(); },
+    step(arg) { const [k, d] = arg.split(":"); state[k] = clampSetting(k, state[k] + Number(d)); render(); },
     toggleOpen() { state.openRounds = !state.openRounds; render(); },
     start() {
       ensureAudio();
@@ -620,7 +642,13 @@
         <span class="track"><span class="fill" style="width:${Math.min(100, (t.score / state.target) * 100)}%"></span></span>
       </div>`).join("")}</div>`;
   };
-  const seg = (act, cur, opts) => `<div class="seg" role="radiogroup">${opts.map(([v, label, unit]) => `<button role="radio" id="${act}-${v}" aria-checked="${cur === v}" data-act="${act}" data-arg="${v}">${label}<small>${unit}</small></button>`).join("")}</div>`;
+  const stepper = (key, unit, step, act, presets) => `
+    <div class="stepper">
+      <button class="icon-btn" data-act="step" data-arg="${key}:-${step}" aria-label="Weniger">−</button>
+      <label class="step-val"><input id="in-${key}" type="number" inputmode="numeric" data-setting="${key}" min="${LIMITS[key][0]}" max="${LIMITS[key][1]}" value="${state[key]}" aria-label="${unit}"><span>${unit}</span></label>
+      <button class="icon-btn" data-act="step" data-arg="${key}:${step}" aria-label="Mehr">+</button>
+    </div>
+    <div class="presets">${presets.map((v) => `<button class="preset" data-act="${act}" data-arg="${v}" aria-pressed="${state[key] === v}">${v}</button>`).join("")}</div>`;
 
   const views = {
     setup() {
@@ -642,8 +670,8 @@
           ${state.teams.length < 6 ? `<button class="btn btn-ghost add" data-act="addTeam">${ICONS.plus} Team hinzufügen</button>` : ""}
         </div>
       </section>
-      <section><h2 class="h">Zeit pro Runde</h2>${seg("setTime", state.roundTime, [[60, "60", "s"], [120, "120", "s"]])}</section>
-      <section><h2 class="h">Spiellänge</h2>${seg("setTarget", state.target, [[30, "30", "Pkt."], [50, "50", "Pkt."], [80, "80", "Pkt."]])}</section>
+      <section><h2 class="h">Zeit pro Runde</h2>${stepper("roundTime", "Sekunden", 10, "setTime", [60, 90, 120, 180])}</section>
+      <section><h2 class="h">Punkte zum Sieg</h2>${stepper("target", "Punkte", 5, "setTarget", [30, 50, 80, 100])}</section>
       <button class="switch-row" id="openRounds" role="switch" aria-checked="${state.openRounds}" data-act="toggleOpen">
         <div><b>Offene Runden</b><small>Ab und zu dürfen alle Teams mitraten. Jeder Begriff zählt für das Team, das ihn zuerst errät.</small></div>
         <span class="switch"></span>
@@ -686,7 +714,7 @@
       </section>
       ${tr.open ? `<div class="open-banner">${ICONS.all}<div><b>Offene Runde</b><small>Alle Teams dürfen raten. Jeder Begriff zählt für das Team, das ihn zuerst errät.</small></div></div>` : ""}
       <div class="grow"></div>
-      <div class="cta"><p class="handoff-hint">${ICONS.phone}Handy an die Person geben, die darstellt</p><button class="btn btn-team t-${t.c}" data-act="draw">Aufdecken &amp; los · ${state.roundTime} s</button></div>`;
+      <div class="cta"><p class="handoff-hint">${ICONS.phone}Handy an die Person geben, die darstellt</p><button class="btn btn-team t-${t.c}" data-act="draw">Aufdecken &amp; los · ${state.roundTime >= 60 ? fmt(state.roundTime * 1000) + " min" : state.roundTime + " s"}</button></div>`;
     },
 
     play() {
@@ -822,7 +850,13 @@
   }
   app.addEventListener("click", onAct);
   sheet.addEventListener("click", (e) => { if (e.target === sheet) { actions.closeMenu(); return; } onAct(e); });
+  app.addEventListener("change", (e) => {
+    const k = e.target.dataset.setting; if (!k) return;
+    state[k] = clampSetting(k, e.target.value); render();
+  });
   app.addEventListener("input", (e) => {
+    const k = e.target.dataset.setting;
+    if (k) { const n = Number(e.target.value); if (e.target.value !== "" && n >= LIMITS[k][0] && n <= LIMITS[k][1]) { state[k] = Math.round(n); save(); } return; }
     const i = e.target.dataset.team; if (i === undefined) return;
     state.teams[Number(i)].name = e.target.value; save();
   });
