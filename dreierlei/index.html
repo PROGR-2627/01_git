@@ -1,71 +1,39 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="theme-color" content="#F3F4F9">
+<meta name="theme-color" content="#E6EEE9">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Dreierlei</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&display=swap">
 <style>
-  /* Layout: Spieltisch. One screen per game phase; the card or the timer is the hero, every action sits in the thumb zone.
-     Color 60/30/10: neutral table / ink / token-yellow accent. Categories (Erklären, Zeichnen, Pantomime) and teams carry their own colours.
-     Type: one family (Nunito), 2 weights, 4 sizes. Spacing on the 8-point grid. */
+  /* Layout: Spieltisch. A calm sage table with flat, printed game pieces on it: white controls, full-colour cards,
+     one screen per step and every action at the bottom. Deliberately one light look, also when the phone is in dark mode.
+     Type: Bricolage Grotesque, 2 weights, 4 sizes. Spacing on the 8-point grid. */
   :root {
-    --bg: #F3F4F9;
+    color-scheme: light;
+    --bg: #E6EEE9;
     --surface: #FFFFFF;
-    --ink: #1B1E30;
-    --ink-2: rgb(27 30 48 / .8);
-    --ink-3: rgb(27 30 48 / .62);
-    --line: rgb(27 30 48 / .1);
-    --line-strong: rgb(27 30 48 / .16);
-    --track: rgb(27 30 48 / .07);
-    --accent: #FFC22E;
-    --accent-edge: #DDA000;
-    --accent-ink: #1B1E30;
-    --accent-soft: rgb(255 194 46 / .16);
-    --focus: #2A5BD7;
-    --ok: #13A06C; --ok-edge: #0C7A51;
-    --warn: #E98500; --crit: #E3402F;
-    --on-color: #FFFFFF; --on-mode: #FFFFFF;
-    --m-erklaeren: #D9560C; --m-zeichnen: #1E7BD0; --m-pantomime: #C63B7F;
-    --blue: #3550F2; --red: #E5484D; --green: #12A37E; --yellow: #D99A00; --violet: #8B4DFF; --cyan: #0A9CBF;
-    --shadow-1: 0 1px 2px rgb(27 30 48 / .06), 0 6px 16px rgb(27 30 48 / .06);
-    --shadow-2: 0 2px 4px rgb(27 30 48 / .05), 0 16px 40px rgb(27 30 48 / .14);
-    --font: "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
-    --fs-s: 13px; --fs-m: 16px; --fs-l: 24px; --fs-xl: clamp(44px, 13vw, 64px);
-    --w-1: 600; --w-2: 900;
+    --surface-2: #F3F7F4;
+    --ink: #17201B;
+    --ink-2: rgb(23 32 27 / .74);
+    --ink-3: rgb(23 32 27 / .56);
+    --line: rgb(23 32 27 / .12);
+    --track: rgb(23 32 27 / .09);
+    --press: rgb(23 32 27 / .06);
+    --focus: #2B62E3;
+    --ok: #127F55; --warn: #C27000; --crit: #D23A2C;
+    --on: #FFFFFF;
+    --m-erklaeren: #DE5520; --m-zeichnen: #2B62E3; --m-pantomime: #C42F72;
+    --blue: #2B4FE0; --red: #D93E3A; --green: #12805F; --yellow: #A87400; --violet: #7444E0; --cyan: #0A7FA0;
+    --lift: 0 1px 2px rgb(23 32 27 / .08);
+    --font: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --fs-s: 14px; --fs-m: 17px; --fs-l: 26px; --fs-xl: clamp(48px, 14vw, 72px);
+    --w-1: 500; --w-2: 800;
     --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
-    --r-card: 24px; --r-ctl: 16px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #10121C; --surface: #1B1E2D; --ink: #F1F2F8;
-      --ink-2: rgb(241 242 248 / .8); --ink-3: rgb(241 242 248 / .62);
-      --line: rgb(241 242 248 / .1); --line-strong: rgb(241 242 248 / .16); --track: rgb(241 242 248 / .08);
-      --accent: #FFC93F; --accent-edge: #C08F00; --accent-ink: #1B1E30; --accent-soft: rgb(255 201 63 / .14);
-      --focus: #8FB0FF; --ok: #2CBF87; --ok-edge: #1B8F63; --warn: #FFA62B; --crit: #FF5C4F;
-      --on-color: #10121C; --on-mode: #10121C;
-      --m-erklaeren: #FF9152; --m-zeichnen: #5AABF2; --m-pantomime: #F06BAE;
-      --blue: #7C8DFF; --red: #FF6B70; --green: #3CCB9F; --yellow: #FFC53D; --violet: #B08CFF; --cyan: #3CC7E6;
-      --shadow-1: 0 1px 2px rgb(0 0 0 / .3), 0 6px 16px rgb(0 0 0 / .25);
-      --shadow-2: 0 2px 4px rgb(0 0 0 / .3), 0 16px 40px rgb(0 0 0 / .45);
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #10121C; --surface: #1B1E2D; --ink: #F1F2F8;
-    --ink-2: rgb(241 242 248 / .8); --ink-3: rgb(241 242 248 / .62);
-    --line: rgb(241 242 248 / .1); --line-strong: rgb(241 242 248 / .16); --track: rgb(241 242 248 / .08);
-    --accent: #FFC93F; --accent-edge: #C08F00; --accent-ink: #1B1E30; --accent-soft: rgb(255 201 63 / .14);
-    --focus: #8FB0FF; --ok: #2CBF87; --ok-edge: #1B8F63; --warn: #FFA62B; --crit: #FF5C4F;
-    --on-color: #10121C; --on-mode: #10121C;
-    --m-erklaeren: #FF9152; --m-zeichnen: #5AABF2; --m-pantomime: #F06BAE;
-    --blue: #7C8DFF; --red: #FF6B70; --green: #3CCB9F; --yellow: #FFC53D; --violet: #B08CFF; --cyan: #3CC7E6;
-    --shadow-1: 0 1px 2px rgb(0 0 0 / .3), 0 6px 16px rgb(0 0 0 / .25);
-    --shadow-2: 0 2px 4px rgb(0 0 0 / .3), 0 16px 40px rgb(0 0 0 / .45);
-    color-scheme: dark;
+    --r-1: 14px; --r-2: 18px;
   }
 
   * { box-sizing: border-box; }
@@ -78,7 +46,7 @@
     font-family: var(--font);
     font-size: var(--fs-m);
     font-weight: var(--w-1);
-    line-height: 1.45;
+    line-height: 1.4;
     -webkit-tap-highlight-color: transparent;
     user-select: none; -webkit-user-select: none;
     overscroll-behavior: none;
@@ -86,7 +54,7 @@
   input { font: inherit; user-select: text; -webkit-user-select: text; }
   button { font: inherit; color: inherit; }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-  h1, h2, h3, p { margin: 0; font-weight: inherit; }
+  h1, h2, h3, p, ul, ol { margin: 0; font-weight: inherit; }
   b, strong { font-weight: var(--w-2); }
   svg { display: block; }
 
@@ -105,424 +73,360 @@
   }
   .phase-play { height: 100%; min-height: 560px; gap: var(--s-4); }
   .grow { flex: 1; }
-  .label { font-size: var(--fs-s); font-weight: var(--w-2); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
-  .group { display: grid; gap: var(--s-3); }
-  .label-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+  .label { font-size: var(--fs-s); color: var(--ink-3); }
+  .group { display: grid; gap: var(--s-2); }
+  .label-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); }
   .hint-text { font-size: var(--fs-s); color: var(--ink-3); text-wrap: pretty; }
 
-  /* ---------- Top bar */
+  /* ---------- Bar + wordmark */
   .bar { display: flex; align-items: center; gap: var(--s-2); }
-  .brand { font-weight: var(--w-2); font-size: var(--fs-m); letter-spacing: -0.01em; }
-  .brand span, .title span { background: linear-gradient(transparent 50%, var(--accent) 50%, var(--accent) 82%, transparent 82%); }
-  .bar-sub { flex: 1; min-width: 0; color: var(--ink-3); font-size: var(--fs-s); font-weight: var(--w-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .brand { display: flex; align-items: center; gap: var(--s-2); font-weight: var(--w-2); font-size: var(--fs-m); letter-spacing: -0.01em; }
+  .mark { position: relative; width: 26px; height: 20px; flex: none; }
+  .mark i { position: absolute; bottom: 0; width: 12px; height: 17px; border-radius: 3px; background: var(--mc); box-shadow: 0 0 0 1.5px var(--bg); }
+  .mark i:nth-child(1) { left: 0; transform: rotate(-14deg); }
+  .mark i:nth-child(2) { left: 7px; bottom: 2px; }
+  .mark i:nth-child(3) { left: 14px; transform: rotate(14deg); }
+  .bar-sub { flex: 1; min-width: 0; color: var(--ink-3); font-size: var(--fs-s); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .icon-btn {
     width: 44px; height: 44px; flex: none;
     display: grid; place-items: center;
-    border: 0; border-radius: 14px;
-    background: var(--surface); color: var(--ink);
-    box-shadow: var(--shadow-1); cursor: pointer;
+    border: 0; border-radius: var(--r-1);
+    background: var(--surface); color: var(--ink); box-shadow: var(--lift);
+    cursor: pointer;
   }
+  .icon-btn:active { background: var(--surface-2); }
   .icon-btn svg { width: 22px; height: 22px; }
   .pill-btn {
     height: 44px; padding: 0 var(--s-4);
     display: inline-flex; align-items: center; gap: var(--s-2);
-    border: 0; border-radius: 14px; background: var(--surface); box-shadow: var(--shadow-1);
+    border: 0; border-radius: var(--r-1); background: var(--surface); box-shadow: var(--lift);
     font-size: var(--fs-s); font-weight: var(--w-2); cursor: pointer;
   }
   .pill-btn svg { width: 20px; height: 20px; }
 
-  /* ---------- Buttons: chunky, pressable game tokens */
+  /* ---------- Buttons: flat, solid, a short press */
   .btn {
-    --edge: var(--line-strong); --hl: 0 0 #0000;
-    min-height: 56px; padding: 0 var(--s-5); margin-bottom: var(--s-1);
-    border: 0; border-radius: var(--r-ctl);
+    min-height: 56px; padding: 0 var(--s-5);
+    border: 0; border-radius: var(--r-1);
     font-size: var(--fs-m); font-weight: var(--w-2);
     display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
-    cursor: pointer;
-    box-shadow: var(--hl), 0 4px 0 var(--edge);
-    transition: transform .08s ease, box-shadow .08s ease;
+    cursor: pointer; transition: transform .08s ease, filter .08s ease;
   }
-  .btn:active { transform: translateY(3px); box-shadow: var(--hl), 0 1px 0 var(--edge); }
+  .btn:active { transform: scale(.98); filter: brightness(.94); }
   .btn svg { width: 22px; height: 22px; flex: none; }
   .btn[disabled] { opacity: .4; cursor: default; transform: none; }
-  .btn-primary { background: var(--accent); color: var(--accent-ink); --edge: var(--accent-edge); --hl: inset 0 1px 0 rgb(255 255 255 / .55); }
-  .btn-ok { background: var(--ok); color: var(--on-color); --edge: var(--ok-edge); --hl: inset 0 1px 0 rgb(255 255 255 / .3); }
-  .btn-team { background: var(--team); color: var(--on-color); --edge: color-mix(in srgb, var(--team) 70%, #000); --hl: inset 0 1px 0 rgb(255 255 255 / .3); }
-  .btn-secondary { background: var(--surface); color: var(--ink); --hl: inset 0 0 0 1px var(--line); }
+  .btn-primary { background: var(--ink); color: var(--on); }
+  .btn-ok { background: var(--ok); color: var(--on); }
+  .btn-team { background: var(--team); color: var(--on); }
+  .btn-secondary { background: var(--surface); color: var(--ink); box-shadow: var(--lift); }
   .btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .row { display: grid; grid-template-columns: 1fr 1.5fr; gap: var(--s-3); }
+  .row { display: grid; grid-template-columns: 1fr 1.6fr; gap: var(--s-3); }
   .row-even { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
-
-  /* ---------- Sticky action area in the thumb zone */
-  .cta {
-    position: sticky; bottom: 0; z-index: 2;
-    display: grid; gap: var(--s-2);
-    margin-bottom: calc(-1 * var(--s-5));
-    padding-block: var(--s-5);
-    background: linear-gradient(to bottom, transparent, var(--bg) var(--s-5));
-  }
-  .handoff-hint { display: flex; align-items: center; justify-content: center; gap: var(--s-2); color: var(--ink-3); font-size: var(--fs-s); font-weight: var(--w-2); }
+  .foot { display: grid; gap: var(--s-2); }
+  .foot.sticky { position: sticky; bottom: 0; z-index: 2; margin-bottom: calc(-1 * var(--s-5)); padding-block: var(--s-3) var(--s-5); background: linear-gradient(to bottom, transparent, var(--bg) var(--s-3)); }
+  .handoff-hint { display: flex; align-items: center; justify-content: center; gap: var(--s-2); color: var(--ink-3); font-size: var(--fs-s); }
   .handoff-hint svg { width: 18px; height: 18px; }
 
-  /* ---------- Setup */
-  .hero { display: grid; justify-items: center; text-align: center; gap: var(--s-3); }
-  .fan { position: relative; width: 280px; max-width: 100%; height: 124px; }
-  .fan-card {
-    position: absolute; top: var(--s-3); left: 50%;
-    width: 84px; height: 104px; margin-left: -42px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-2);
-    border-radius: var(--r-ctl); border-top: 6px solid var(--mc);
-    background: var(--surface); box-shadow: var(--shadow-2);
-    font-size: var(--fs-s); font-weight: var(--w-2); color: var(--ink-2);
-  }
-  .fan-card span { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--mc) 16%, var(--surface)); color: var(--mc); }
-  .fan-card svg { width: 24px; height: 24px; }
-  .fan-card:nth-child(1) { transform: translate(-90px, 10px) rotate(-10deg); animation: fanL .6s cubic-bezier(.2,.8,.2,1); }
-  .fan-card:nth-child(2) { z-index: 1; }
-  .fan-card:nth-child(3) { transform: translate(90px, 10px) rotate(10deg); animation: fanR .6s cubic-bezier(.2,.8,.2,1); }
-  @keyframes fanL { from { transform: none; } }
-  @keyframes fanR { from { transform: none; } }
-  .title { font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1; letter-spacing: -0.03em; }
-  .lede { color: var(--ink-2); max-width: 32ch; text-wrap: balance; }
+  /* ---------- Setup wizard */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-1); }
+  .steps i { height: 4px; border-radius: 2px; background: var(--track); }
+  .steps i.on { background: var(--ink); }
+  .intro { display: grid; gap: var(--s-1); }
+  .q { font-size: var(--fs-l); font-weight: var(--w-2); line-height: 1.15; letter-spacing: -0.01em; }
+  .sub { color: var(--ink-2); }
 
   .teams { display: grid; gap: var(--s-2); }
   .team-row {
     display: flex; align-items: center; gap: var(--s-3);
-    padding: var(--s-1) var(--s-1) var(--s-1) var(--s-4);
-    border-radius: var(--r-ctl); background: var(--surface); box-shadow: var(--shadow-1);
+    padding-left: var(--s-4); border-radius: var(--r-1);
+    background: var(--surface); box-shadow: var(--lift);
   }
-  .team-row:focus-within { box-shadow: var(--shadow-1), inset 0 0 0 2px var(--team); }
-  .team-row > svg { width: 24px; height: 24px; color: var(--team); flex: none; }
-  .team-row input { flex: 1; min-width: 0; height: 48px; border: 0; background: transparent; color: var(--ink); font-weight: var(--w-2); outline: none; }
+  .team-row:focus-within { box-shadow: inset 0 0 0 2px var(--team); }
+  .token { width: 20px; height: 20px; border-radius: 50%; background: var(--team); flex: none; box-shadow: inset 0 -3px 0 rgb(0 0 0 / .18); }
+  .team-row input { flex: 1; min-width: 0; height: 52px; border: 0; background: transparent; color: var(--ink); font-weight: var(--w-2); outline: none; }
   .team-row .icon-btn { background: transparent; box-shadow: none; color: var(--ink-3); }
+  .teams.dense .team-row input { height: 46px; }
   .add {
-    min-height: 56px; display: flex; align-items: center; justify-content: center; gap: var(--s-2);
-    border: 2px dashed var(--line-strong); border-radius: var(--r-ctl); background: transparent;
-    color: var(--ink-3); font-weight: var(--w-2); cursor: pointer;
+    min-height: 52px; display: flex; align-items: center; justify-content: center; gap: var(--s-2);
+    border: 1.5px dashed var(--ink-3); border-radius: var(--r-1); background: transparent;
+    color: var(--ink-2); font-weight: var(--w-2); cursor: pointer;
   }
   .add svg { width: 20px; height: 20px; }
 
-  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  .opts { display: grid; gap: var(--s-2); }
   .opt {
-    display: grid; align-content: start; gap: var(--s-1);
-    padding: var(--s-4); border: 0; border-radius: var(--r-ctl);
-    background: var(--surface); box-shadow: var(--shadow-1);
+    display: flex; align-items: center; gap: var(--s-3);
+    padding: var(--s-4); border: 0; border-radius: var(--r-1);
+    background: var(--surface); box-shadow: var(--lift);
     text-align: left; cursor: pointer;
   }
-  .opt svg { width: 24px; height: 24px; color: var(--ink-3); margin-bottom: var(--s-1); }
-  .opt small { font-size: var(--fs-s); color: var(--ink-3); line-height: 1.35; }
-  .opt[aria-checked="true"] { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); box-shadow: var(--shadow-1), inset 0 0 0 2px var(--accent-edge); }
-  .opt[aria-checked="true"] svg { color: var(--ink); }
+  .opt > svg { width: 28px; height: 28px; flex: none; color: var(--ink-2); }
+  .opt > span { flex: 1; min-width: 0; display: grid; gap: 2px; }
+  .opt small { font-size: var(--fs-s); color: var(--ink-3); }
+  .radio { width: 24px; height: 24px; flex: none; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--line); }
+  .opt[aria-checked="true"] { box-shadow: inset 0 0 0 2px var(--ink); }
+  .opt[aria-checked="true"] .radio { box-shadow: inset 0 0 0 7px var(--ink); }
+
+  .switch-row {
+    width: 100%; display: flex; align-items: center; gap: var(--s-4);
+    padding: var(--s-4); border: 0; border-radius: var(--r-1);
+    background: var(--surface); box-shadow: var(--lift); text-align: left; cursor: pointer;
+  }
+  .switch-row > span:first-child { flex: 1; min-width: 0; display: grid; gap: 2px; }
+  .switch-row small { color: var(--ink-3); font-size: var(--fs-s); }
+  .switch { width: 52px; height: 32px; border-radius: 999px; background: var(--track); position: relative; flex: none; transition: background .2s; }
+  .switch::after { content: ""; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgb(0 0 0 / .25); transition: transform .2s; }
+  [aria-checked="true"] > .switch { background: var(--ok); }
+  [aria-checked="true"] > .switch::after { transform: translateX(20px); }
 
   .stepper { display: grid; grid-template-columns: 56px 1fr 56px; gap: var(--s-2); align-items: center; }
   .stepper .icon-btn { width: 56px; height: 56px; font-size: var(--fs-l); font-weight: var(--w-2); }
   .step-val {
     height: 56px; padding: 0 var(--s-3);
     display: flex; align-items: baseline; justify-content: center; gap: var(--s-2);
-    border-radius: var(--r-ctl); background: var(--surface); box-shadow: var(--shadow-1); cursor: text;
+    border-radius: var(--r-1); background: var(--surface); box-shadow: var(--lift); cursor: text;
   }
-  .step-val:focus-within { box-shadow: var(--shadow-1), inset 0 0 0 2px var(--ink); }
+  .step-val:focus-within { box-shadow: inset 0 0 0 2px var(--ink); }
   .step-val input {
     width: 4ch; min-width: 0; border: 0; background: transparent; color: var(--ink); outline: none; text-align: right;
     font-size: var(--fs-l); font-weight: var(--w-2); line-height: 56px; font-variant-numeric: tabular-nums; -moz-appearance: textfield;
   }
   .step-val input::-webkit-inner-spin-button, .step-val input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-  .step-val span { color: var(--ink-3); font-size: var(--fs-s); font-weight: var(--w-2); }
+  .step-val span { color: var(--ink-3); font-size: var(--fs-s); }
   .presets { display: flex; flex-wrap: wrap; gap: var(--s-2); }
   .preset {
-    min-height: 44px; padding: 0 var(--s-4); border: 0; border-radius: 999px;
-    background: var(--track); color: var(--ink-2);
+    min-height: 44px; min-width: 56px; padding: 0 var(--s-3); border: 0; border-radius: 12px;
+    background: transparent; box-shadow: inset 0 0 0 1.5px var(--line); color: var(--ink-2);
     font-size: var(--fs-s); font-weight: var(--w-2); font-variant-numeric: tabular-nums; cursor: pointer;
   }
-  .preset[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-
-  .switch-row {
-    width: 100%; display: flex; align-items: center; gap: var(--s-4);
-    padding: var(--s-4); border: 0; border-radius: var(--r-ctl);
-    background: var(--surface); box-shadow: var(--shadow-1); text-align: left; cursor: pointer;
-  }
-  .switch-row > div { flex: 1; min-width: 0; display: grid; gap: 2px; }
-  .switch-row small { color: var(--ink-3); font-size: var(--fs-s); }
-  .switch { width: 52px; height: 32px; border-radius: 999px; background: var(--line-strong); position: relative; flex: none; transition: background .2s; }
-  .switch::after { content: ""; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 3px rgb(0 0 0 / .25); transition: transform .2s; }
-  [aria-checked="true"] > .switch { background: var(--ok); }
-  [aria-checked="true"] > .switch::after { transform: translateX(20px); }
+  .preset[aria-pressed="true"] { background: var(--ink); box-shadow: none; color: var(--on); }
 
   /* ---------- Turn */
-  .who {
-    position: relative; overflow: hidden;
-    display: flex; align-items: center; gap: var(--s-4);
-    padding: var(--s-4) var(--s-5);
-    border-radius: var(--r-card); background: var(--team); color: var(--on-color);
-    box-shadow: 0 12px 28px color-mix(in srgb, var(--team) 35%, transparent);
-  }
-  .who-pawn { width: 48px; height: 48px; border-radius: var(--r-ctl); background: rgb(255 255 255 / .22); display: grid; place-items: center; flex: none; }
-  .who-pawn svg { width: 28px; height: 28px; }
+  .who { display: flex; align-items: center; gap: var(--s-4); padding: var(--s-4) var(--s-5); border-radius: var(--r-2); background: var(--team); color: var(--on); }
   .who-text { flex: 1; min-width: 0; }
   .who .label { color: inherit; opacity: .8; }
-  .who h2 { font-size: var(--fs-l); font-weight: var(--w-2); line-height: 1.15; overflow-wrap: anywhere; }
-  .need { display: grid; justify-items: end; flex: none; }
+  .who h2 { font-size: var(--fs-l); font-weight: var(--w-2); line-height: 1.1; overflow-wrap: anywhere; }
+  .need { display: grid; justify-items: end; flex: none; text-align: right; }
   .need b { font-size: var(--fs-l); line-height: 1; font-variant-numeric: tabular-nums; }
   .need span { font-size: var(--fs-s); opacity: .85; }
 
-  .modes { display: grid; grid-template-columns: repeat(3, 1fr) 64px; gap: var(--s-2); }
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr) 60px; gap: var(--s-2); }
   .modes.locked { grid-template-columns: repeat(3, 1fr); }
   .mode {
-    min-height: 88px; padding: var(--s-2) var(--s-1);
+    min-height: 84px; padding: var(--s-2) var(--s-1);
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-2);
-    border: 0; border-radius: var(--r-ctl); background: var(--surface); box-shadow: var(--shadow-1);
-    font-size: var(--fs-s); font-weight: var(--w-2); color: var(--ink-2);
-    cursor: pointer; transition: transform .15s, background .15s, color .15s, box-shadow .15s;
+    border: 0; border-radius: var(--r-1); background: var(--surface); box-shadow: var(--lift);
+    font-size: var(--fs-s); font-weight: var(--w-2); color: var(--ink-2); cursor: pointer;
+    transition: background .15s, color .15s;
   }
-  .mode-ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--mc, var(--ink)) 14%, transparent); color: var(--mc, var(--ink-2)); }
-  .mode-ic svg { width: 24px; height: 24px; }
-  .mode[aria-checked="true"] { background: var(--mc); color: var(--on-mode); transform: translateY(-2px); box-shadow: 0 10px 24px color-mix(in srgb, var(--mc) 40%, transparent); }
-  .mode[aria-checked="true"] .mode-ic { background: rgb(255 255 255 / .22); color: var(--on-mode); }
-  .mode[disabled] { cursor: default; opacity: .45; }
+  .mode svg { width: 28px; height: 28px; color: var(--mc, var(--ink-2)); }
+  .mode[aria-checked="true"] { background: var(--mc); color: var(--on); box-shadow: none; }
+  .mode[aria-checked="true"] svg { color: var(--on); }
+  .mode[disabled] { cursor: default; opacity: .5; }
   .mode[disabled][aria-checked="true"] { opacity: 1; }
-  .lock { display: inline-flex; align-items: center; gap: var(--s-1); font-size: var(--fs-s); font-weight: var(--w-2); color: var(--ink-3); }
+  .lock { display: inline-flex; align-items: center; gap: var(--s-1); font-size: var(--fs-s); color: var(--ink-3); }
   .lock svg { width: 14px; height: 14px; }
 
   .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-2); }
   .level {
-    min-height: 88px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-1);
-    border: 0; border-radius: var(--r-ctl); background: var(--surface); box-shadow: var(--shadow-1); color: var(--ink);
-    cursor: pointer; transition: transform .15s, background .15s, color .15s;
+    min-height: 84px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-1);
+    border: 0; border-radius: var(--r-1); background: var(--surface); box-shadow: var(--lift); color: var(--ink); cursor: pointer;
   }
   .level small { font-size: var(--fs-s); color: var(--ink-3); }
-  .level[aria-checked="true"] { background: var(--ink); color: var(--bg); transform: translateY(-2px); box-shadow: var(--shadow-2); }
-  .level[aria-checked="true"] small { color: inherit; opacity: .7; }
+  .level[aria-checked="true"] { background: var(--ink); color: var(--on); box-shadow: none; }
+  .level[aria-checked="true"] small { color: inherit; opacity: .75; }
   .pips { display: inline-flex; gap: var(--s-1); }
   .pips i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-  .pips i.off { opacity: .25; }
+  .pips i.off { opacity: .28; }
 
-  .open-banner { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-4); border-radius: var(--r-ctl); background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent-edge); }
-  .open-banner svg { width: 28px; height: 28px; flex: none; }
-  .open-banner div { display: grid; gap: 2px; }
-  .open-banner small { color: var(--ink-2); font-size: var(--fs-s); }
+  .open-banner { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4); border-radius: var(--r-1); background: var(--surface); box-shadow: inset 0 0 0 2px var(--ink); }
+  .open-banner svg { width: 26px; height: 26px; flex: none; }
+  .open-banner span { font-size: var(--fs-s); }
 
   /* ---------- Play */
   .playhead { display: flex; align-items: center; gap: var(--s-2); }
-  .chip-team, .chip-mode { display: inline-flex; align-items: center; gap: 6px; height: 36px; border-radius: 999px; font-size: var(--fs-s); font-weight: var(--w-2); min-width: 0; }
-  .chip-team { padding: 0 var(--s-3) 0 var(--s-2); background: var(--team); color: var(--on-color); max-width: 42%; }
-  .chip-team span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .chip-team svg, .chip-mode svg { width: 18px; height: 18px; flex: none; }
-  .chip-mode { padding: 0 var(--s-3); background: color-mix(in srgb, var(--mc) 14%, var(--surface)); color: var(--ink); }
-  .chip-mode svg, .chip-mode .pips { color: var(--mc); }
+  .chip-team, .chip-mode { display: inline-flex; align-items: center; gap: var(--s-2); height: 36px; padding: 0 var(--s-3); border-radius: 10px; font-size: var(--fs-s); font-weight: var(--w-2); min-width: 0; }
+  .chip-team { background: var(--surface); box-shadow: var(--lift); max-width: 46%; }
+  .chip-team .token { width: 14px; height: 14px; }
+  .chip-team span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chip-mode { color: var(--ink-2); padding-left: var(--s-1); }
+  .chip-mode svg { width: 18px; height: 18px; color: var(--mc); }
+  .chip-mode .pips { color: var(--mc); }
   .chip-mode .pips i { width: 6px; height: 6px; }
 
-  .stage { flex: 1; display: grid; place-items: center; min-height: 0; }
-  .ring {
-    position: relative; width: min(64vw, 30vh, 260px); aspect-ratio: 1; max-width: 100%;
-    border: 0; padding: 0; background: none; border-radius: 50%; cursor: pointer; touch-action: manipulation;
-    filter: drop-shadow(0 12px 24px rgb(27 30 48 / .12));
-  }
-  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-  .ring .face { fill: var(--surface); }
-  .ring .trk { fill: none; stroke: var(--track); stroke-width: 16; }
-  .ring .bar { fill: none; stroke: var(--mc); stroke-width: 16; stroke-linecap: round; transition: stroke .3s; }
-  .readout { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; pointer-events: none; }
+  .clock { display: grid; justify-items: center; gap: 2px; padding: 0; border: 0; background: none; cursor: pointer; touch-action: manipulation; }
   .time { font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; transition: color .3s, opacity .2s; }
-  .thint { font-size: var(--fs-s); font-weight: var(--w-2); color: var(--ink-3); }
-  .time-pill { display: flex; align-items: baseline; gap: 6px; height: 44px; padding: 0 var(--s-3); border: 0; border-radius: 14px; background: var(--surface); box-shadow: var(--shadow-1); cursor: pointer; }
-  .time-pill .time { font-size: var(--fs-l); line-height: 44px; }
+  .thint { font-size: var(--fs-s); color: var(--ink-3); }
+  .lin { height: 6px; border-radius: 3px; background: var(--track); overflow: hidden; }
+  .lin span { display: block; width: 100%; height: 100%; background: var(--mc); transform-origin: left; }
   .draw-timer { display: flex; align-items: center; gap: var(--s-3); }
   .draw-timer .lin { flex: 1; }
-  .lin { height: 8px; border-radius: 999px; background: var(--track); overflow: hidden; }
-  .lin span { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--mc); transform-origin: left; }
-  [data-tphase="warn"] .ring .bar { stroke: var(--warn); }
-  [data-tphase="crit"] .ring .bar { stroke: var(--crit); }
+  .time-pill { display: flex; align-items: baseline; gap: 6px; height: 44px; padding: 0 var(--s-3); border: 0; border-radius: var(--r-1); background: var(--surface); box-shadow: var(--lift); cursor: pointer; }
+  .time-pill .time { font-size: var(--fs-l); line-height: 44px; }
   [data-tphase="warn"] .lin span { background: var(--warn); }
   [data-tphase="crit"] .lin span { background: var(--crit); }
   [data-tphase="warn"] .time { color: var(--warn); }
   [data-tphase="crit"] .time { color: var(--crit); }
-  [data-tphase="crit"][data-running="true"] .ring { animation: pulse 1s ease-in-out infinite; }
-  [data-running="false"] .time { opacity: .45; }
-  @keyframes pulse { 50% { transform: scale(1.03); } }
+  [data-tphase="crit"][data-running="true"] .clock .time { animation: beat 1s ease-in-out infinite; }
+  [data-running="false"] .time { opacity: .4; }
+  @keyframes beat { 50% { transform: scale(1.05); } }
 
-  /* Game card */
-  .gcard { position: relative; display: flex; flex-direction: column; border-radius: var(--r-card); background: var(--surface); box-shadow: var(--shadow-2); overflow: hidden; }
-  .gcard::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--line); pointer-events: none; }
-  .gcard-head {
-    display: flex; align-items: center; gap: var(--s-2);
-    padding: var(--s-3) var(--s-4);
-    border-top: 6px solid var(--mc);
-    background: color-mix(in srgb, var(--mc) 14%, var(--surface));
-    font-size: var(--fs-s); font-weight: var(--w-2); letter-spacing: .08em; text-transform: uppercase;
+  /* Printed playing card: full colour, inner frame, corner index top-left and mirrored bottom-right */
+  .card {
+    position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-3);
+    min-height: 196px; padding: var(--s-4) var(--s-5);
+    border-radius: var(--r-2); background: var(--mc); color: var(--on); overflow: hidden;
   }
-  .gcard-head svg { width: 20px; height: 20px; color: var(--mc); }
-  .gcard-head .pips { margin-left: auto; color: var(--mc); }
-  .gcard-body { flex: 1; display: grid; place-items: center; min-height: 128px; padding: var(--s-5) var(--s-4); text-align: center; }
-  .gcard-word { display: block; max-width: 100%; font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: normal; }
-  .deal { animation: deal .34s cubic-bezier(.2,.8,.2,1); }
-  @keyframes deal { from { transform: translateX(56px) rotate(6deg); opacity: 0; } }
+  .card::before { content: ""; position: absolute; inset: 8px; border-radius: 12px; border: 1.5px solid rgb(255 255 255 / .45); pointer-events: none; }
+  .card-top, .card-bot { position: relative; display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-s); font-weight: var(--w-2); }
+  .card-top svg, .card-bot svg { width: 18px; height: 18px; }
+  .card-top .pips { margin-left: auto; }
+  .card-bot { transform: rotate(180deg); opacity: .8; }
+  .card-word { position: relative; display: block; max-width: 100%; margin: auto 0; text-align: center; font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1.02; letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: normal; }
+  .play-card { flex: 1; }
+  .deal { animation: deal .3s cubic-bezier(.2,.8,.2,1); }
+  @keyframes deal { from { transform: translateX(40px) rotate(4deg); opacity: 0; } }
 
-  /* Face-down card: hold to flip */
-  .flip { display: block; width: 100%; height: 216px; padding: 0; border: 0; background: none; perspective: 1000px; cursor: pointer; touch-action: none; -webkit-touch-callout: none; text-align: inherit; }
-  .flip-inner { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .28s cubic-bezier(.2,.8,.2,1); }
+  .flip { display: block; width: 100%; min-height: 196px; padding: 0; border: 0; background: none; perspective: 1000px; cursor: pointer; touch-action: none; -webkit-touch-callout: none; text-align: inherit; }
+  .flip.play-card { flex: 1; }
+  .flip-inner { position: relative; display: block; width: 100%; height: 100%; min-height: inherit; transform-style: preserve-3d; transition: transform .28s cubic-bezier(.2,.8,.2,1); }
   .flip.on .flip-inner { transform: rotateY(180deg); }
-  .face-back, .face-front { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .face-back, .face-front { position: absolute; inset: 0; min-height: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
   .face-front { transform: rotateY(180deg); }
-  .face-back {
-    align-items: center; justify-content: center; gap: var(--s-3);
-    background-color: var(--mc);
-    background-image: repeating-linear-gradient(45deg, rgb(255 255 255 / .13) 0 12px, transparent 12px 24px);
-    color: var(--on-mode);
-  }
-  .back-emblem { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: rgb(255 255 255 / .22); box-shadow: inset 0 0 0 3px rgb(255 255 255 / .5); }
-  .back-emblem svg { width: 32px; height: 32px; }
-  .back-hint { display: inline-flex; align-items: center; gap: 6px; padding: var(--s-2) var(--s-4); border-radius: 999px; background: var(--surface); color: var(--ink); box-shadow: var(--shadow-1); font-size: var(--fs-s); font-weight: var(--w-2); }
+  .face-back { align-items: center; justify-content: center; background-image: radial-gradient(rgb(255 255 255 / .16) 1.5px, transparent 2px); background-size: 14px 14px; }
+  .back-icon { position: relative; width: 88px; height: 88px; border-radius: 50%; display: grid; place-items: center; background: var(--mc); box-shadow: 0 0 0 1.5px rgb(255 255 255 / .6); }
+  .back-icon svg { width: 44px; height: 44px; }
+  .back-hint { position: relative; display: inline-flex; align-items: center; gap: 6px; padding: var(--s-2) var(--s-3); border-radius: 10px; background: var(--surface); color: var(--ink); font-size: var(--fs-s); font-weight: var(--w-2); }
   .back-hint svg { width: 16px; height: 16px; }
-  .flip.slim { height: 72px; }
-  .flip.slim .gcard-head, .flip.slim .back-emblem { display: none; }
-  .flip.slim .gcard-body { min-height: 0; padding: var(--s-2) var(--s-4); }
-  .flip.slim .gcard-word { font-size: var(--fs-l); }
+  .flip.slim { min-height: 76px; height: 76px; }
+  .flip.slim .card { padding: var(--s-2) var(--s-4); }
+  .flip.slim .card-top, .flip.slim .card-bot, .flip.slim .back-icon { display: none; }
+  .flip.slim .card-word { font-size: var(--fs-l); }
   .flip.fresh .back-hint { animation: nudge .35s ease-in-out 3; }
-  @keyframes nudge { 50% { transform: scale(1.08); } }
+  @keyframes nudge { 50% { transform: scale(1.07); } }
 
-  .tally { display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--ink-3); font-size: var(--fs-s); font-weight: var(--w-2); font-variant-numeric: tabular-nums; }
+  .tally { display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--ink-3); font-size: var(--fs-s); font-variant-numeric: tabular-nums; }
   .tally svg { width: 16px; height: 16px; color: var(--ok); }
   .openpick { display: grid; gap: var(--s-2); }
-  .pick3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: var(--s-2); }
+  .pick3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
+  .pick3 .btn { min-height: 48px; }
   .pick3 .btn, .pick .btn { min-height: 52px; padding: 0 var(--s-2); font-size: var(--fs-s); }
   .pick { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
 
-  .pad-wrap {
-    flex: 1; position: relative; min-height: 200px; overflow: hidden;
-    border-radius: var(--r-card); background-color: var(--surface); box-shadow: var(--shadow-1);
-    background-image: radial-gradient(var(--line-strong) 1px, transparent 1.5px); background-size: 16px 16px;
-  }
+  .pad-wrap { flex: 1; position: relative; min-height: 200px; overflow: hidden; border-radius: var(--r-2); background: var(--surface); box-shadow: var(--lift); }
   .pad-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
   .pad-tools { position: absolute; top: var(--s-2); right: var(--s-2); display: flex; gap: var(--s-2); }
-  .pad-empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--ink-3); font-weight: var(--w-2); pointer-events: none; }
+  .pad-tools .icon-btn { background: var(--surface-2); box-shadow: none; }
+  .pad-empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--ink-3); pointer-events: none; }
 
-  .pop {
-    position: fixed; z-index: 40; pointer-events: none;
-    font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1; color: var(--ok);
-    text-shadow: 0 2px 0 var(--surface), 0 8px 24px rgb(0 0 0 / .18);
-    animation: pop .9s cubic-bezier(.2,.8,.2,1) forwards;
-  }
-  .pop.by-team { color: var(--team); }
-  .pop::after { content: ""; position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; border: 3px solid currentColor; opacity: 0; animation: burst .6s ease-out; }
-  @keyframes pop { 0% { opacity: 0; transform: translate(-50%, -30%) scale(.6); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); } 100% { opacity: 0; transform: translate(-50%, -170%) scale(1); } }
-  @keyframes burst { from { opacity: .7; transform: scale(.3); } to { opacity: 0; transform: scale(1.3); } }
+  .pop { position: fixed; z-index: 40; pointer-events: none; font-size: var(--fs-l); font-weight: var(--w-2); line-height: 1; padding: var(--s-2) var(--s-3); border-radius: 12px; background: var(--ok); color: var(--on); animation: pop .8s cubic-bezier(.2,.8,.2,1) forwards; }
+  .pop.by-team { background: var(--team); }
+  @keyframes pop { 0% { opacity: 0; transform: translate(-50%, -40%) scale(.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -150%); } }
 
   /* ---------- Result */
-  .timeup {
-    display: grid; justify-items: center; gap: var(--s-2); text-align: center;
-    padding: var(--s-5); border-radius: var(--r-card);
-    background: var(--crit); color: #FFFFFF;
-    box-shadow: 0 12px 28px color-mix(in srgb, var(--crit) 35%, transparent);
-    animation: shake .45s ease;
-  }
-  .timeup svg { width: 32px; height: 32px; }
-  .timeup .label { color: inherit; opacity: .85; }
-  .timeup h2 { font-size: var(--fs-l); font-weight: var(--w-2); line-height: 1.2; text-wrap: balance; }
-  @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
-  .gcard.small .gcard-body { min-height: 96px; }
+  .timeup { display: grid; gap: var(--s-1); padding: var(--s-4) var(--s-5); border-radius: var(--r-2); background: var(--crit); color: var(--on); }
+  .timeup .label { color: inherit; opacity: .85; display: flex; align-items: center; gap: var(--s-2); }
+  .timeup .label svg { width: 18px; height: 18px; }
+  .timeup h2 { font-size: var(--fs-l); font-weight: var(--w-2); line-height: 1.15; text-wrap: balance; }
+  .card.small { min-height: 150px; }
 
-  .summary {
-    position: relative; overflow: hidden;
-    display: grid; justify-items: center; gap: var(--s-1); text-align: center;
-    padding: var(--s-5); border-radius: var(--r-card); background: var(--surface); box-shadow: var(--shadow-2);
-  }
-  .summary > * { position: relative; }
-  .summary .big { font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1.05; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-  .summary .sub { color: var(--ink-2); }
+  .summary { display: grid; gap: var(--s-1); padding: var(--s-4) var(--s-5); border-radius: var(--r-2); background: var(--surface); box-shadow: var(--lift); }
+  .summary .big { font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; overflow-wrap: anywhere; }
   .summary.good .big { color: var(--ok); }
-  .summary.good::before, .summary.champ::before {
-    content: ""; position: absolute; top: -120px; left: 50%; width: 240px; height: 240px; margin-left: -120px;
-    background: radial-gradient(circle, color-mix(in srgb, var(--glow, var(--ok)) 28%, transparent), transparent 70%);
-  }
-  .summary.champ { --glow: var(--team); }
-  .summary.champ .big { color: var(--team); }
-  .summary .trophy { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--team) 16%, var(--surface)); color: var(--team); margin-bottom: var(--s-2); }
-  .summary .trophy svg { width: 32px; height: 32px; }
+  .summary.champ { background: var(--team); color: var(--on); box-shadow: none; }
+  .summary.champ .label { color: inherit; opacity: .85; }
+  .summary .sub { color: inherit; opacity: .8; }
 
-  .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-  .wchip { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; max-width: 100%; padding: var(--s-1) var(--s-3); border-radius: 999px; font-size: var(--fs-s); font-weight: var(--w-2); }
-  .wchip svg { width: 16px; height: 16px; flex: none; }
-  .wchip span { overflow-wrap: anywhere; }
-  .wchip.hit { background: color-mix(in srgb, var(--ok) 14%, var(--surface)); }
-  .wchip.hit svg, .wchip.hit b { color: var(--ok); }
-  .wchip .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--team); flex: none; }
-  .wchip.miss { background: var(--track); color: var(--ink-3); }
-  .wchip.miss span { text-decoration: line-through; }
+  .words { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .words li { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; max-width: 100%; padding: var(--s-1) var(--s-3); border-radius: 10px; background: var(--surface); box-shadow: var(--lift); font-size: var(--fs-s); font-weight: var(--w-2); }
+  .words svg { width: 16px; height: 16px; flex: none; }
+  .words li span { overflow-wrap: anywhere; }
+  .words .hit svg, .words .hit b { color: var(--ok); }
+  .words .hit .token { width: 12px; height: 12px; }
+  .words .miss { background: transparent; box-shadow: inset 0 0 0 1.5px var(--line); color: var(--ink-3); }
+  .words .miss span { text-decoration: line-through; }
 
   /* Board: one lane per team, ten fields to the flag */
-  .board { display: grid; gap: var(--s-4); padding: var(--s-4); border-radius: var(--r-card); background: var(--surface); box-shadow: var(--shadow-1); }
+  .board { display: grid; gap: var(--s-4); padding: var(--s-4); border-radius: var(--r-2); background: var(--surface); box-shadow: var(--lift); }
   .lane { display: grid; gap: var(--s-2); }
   .lane-top { display: flex; align-items: center; gap: var(--s-2); }
-  .lane-top > svg { width: 20px; height: 20px; color: var(--team); flex: none; }
+  .lane-top .token { width: 14px; height: 14px; }
   .lane-top .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .lane.current .name::after { content: " · am Zug"; color: var(--ink-3); font-size: var(--fs-s); }
   .lane-top .of { color: var(--ink-3); font-size: var(--fs-s); }
   .lane-top b { font-variant-numeric: tabular-nums; }
   .place { color: var(--ink-3); font-weight: var(--w-2); min-width: 2ch; }
-  .gain { padding: 2px var(--s-2); border-radius: 999px; background: color-mix(in srgb, var(--ok) 14%, var(--surface)); color: var(--ok); font-size: var(--fs-s); font-weight: var(--w-2); }
-  .lane-track { position: relative; height: 16px; margin: 6px 32px 0 0; border-radius: 999px; background: var(--track); }
-  .lane-track::before { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none; background: repeating-linear-gradient(to right, transparent 0 calc(10% - 2px), var(--surface) calc(10% - 2px) 10%); }
+  .gain { padding: 0 var(--s-2); border-radius: 8px; background: var(--ok); color: var(--on); font-size: var(--fs-s); font-weight: var(--w-2); }
+  .lane-track { position: relative; height: 12px; margin: 4px 30px 0 0; border-radius: 4px; background: var(--track); }
+  .lane-track::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: repeating-linear-gradient(to right, transparent 0 calc(10% - 3px), var(--surface) calc(10% - 3px) 10%); }
   .lane-fill { position: absolute; top: 0; bottom: 0; left: 0; border-radius: inherit; background: var(--team); transition: width .9s cubic-bezier(.2,.8,.2,1); }
-  .lane-pawn { position: absolute; top: 50%; z-index: 2; width: 28px; height: 28px; margin: -22px 0 0 -14px; color: var(--team); filter: drop-shadow(0 2px 2px rgb(0 0 0 / .25)); transition: left .9s cubic-bezier(.2,.8,.2,1); }
-  .lane-pawn svg { width: 28px; height: 28px; }
-  .lane-track > .flag { position: absolute; right: -32px; top: 50%; width: 18px; height: 18px; margin-top: -11px; color: var(--ink-3); }
+  .lane-pawn { position: absolute; top: 50%; z-index: 2; width: 26px; height: 26px; margin: -21px 0 0 -13px; color: var(--team); transition: left .9s cubic-bezier(.2,.8,.2,1); }
+  .lane-pawn svg { width: 26px; height: 26px; filter: drop-shadow(0 1px 0 var(--surface)); }
+  .lane-track > .flag { position: absolute; right: -28px; top: 50%; width: 18px; height: 18px; margin-top: -11px; color: var(--ink-3); }
 
   /* ---------- Win */
-  .winner {
-    position: relative; overflow: hidden;
-    display: grid; justify-items: center; gap: var(--s-2); text-align: center;
-    padding: var(--s-6) var(--s-5); border-radius: var(--r-card);
-    background: var(--team); color: var(--on-color);
-    box-shadow: 0 16px 40px color-mix(in srgb, var(--team) 40%, transparent);
-  }
+  .winner { position: relative; overflow: hidden; display: grid; justify-items: start; gap: var(--s-2); padding: var(--s-5); border-radius: var(--r-2); background: var(--team); color: var(--on); }
   .winner > :not(canvas) { position: relative; }
   .winner .label { color: inherit; opacity: .85; }
-  .winner h1 { font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1; letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: anywhere; }
-  .winner .cup { width: 80px; height: 80px; border-radius: 50%; display: grid; place-items: center; background: rgb(255 255 255 / .22); animation: hop .9s ease 2; }
-  .winner .cup svg { width: 44px; height: 44px; }
+  .winner h1 { font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1; letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: anywhere; max-width: 100%; }
+  .winner .cup { width: 56px; height: 56px; border-radius: var(--r-1); display: grid; place-items: center; background: rgb(255 255 255 / .2); }
+  .winner .cup svg { width: 32px; height: 32px; }
   .winner canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  @keyframes hop { 40% { transform: translateY(-12px); } 60% { transform: translateY(-12px) rotate(-6deg); } }
 
   /* ---------- Sheets */
-  .sheet { position: fixed; inset: 0; z-index: 30; display: flex; align-items: flex-end; justify-content: center; background: rgb(10 12 20 / .5); animation: fade .2s ease; }
+  .sheet { position: fixed; inset: 0; z-index: 30; display: flex; align-items: flex-end; justify-content: center; background: rgb(23 32 27 / .4); animation: fade .2s ease; }
   .sheet-body {
     width: 100%; max-width: 480px; max-height: 90%; overflow: auto;
     display: grid; gap: var(--s-4);
     padding: var(--s-5) max(16px, env(safe-area-inset-right, 0px)) calc(var(--s-5) + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
-    border-radius: var(--r-card) var(--r-card) 0 0; background: var(--bg);
-    animation: up .28s cubic-bezier(.2,.8,.2,1);
+    border-radius: var(--r-2) var(--r-2) 0 0; background: var(--bg);
+    animation: up .26s cubic-bezier(.2,.8,.2,1);
   }
   .sheet-body h2 { font-size: var(--fs-l); font-weight: var(--w-2); }
   @keyframes fade { from { opacity: 0; } }
-  @keyframes up { from { transform: translateY(40px); opacity: 0; } }
-  .panel { display: grid; gap: var(--s-3); padding: var(--s-4); border-radius: var(--r-ctl); background: var(--surface); box-shadow: var(--shadow-1); }
-  .adj { display: grid; grid-template-columns: 20px minmax(0, 1fr) 44px 44px 44px; align-items: center; gap: var(--s-2); }
-  .adj > svg { width: 20px; height: 20px; color: var(--team); }
+  @keyframes up { from { transform: translateY(32px); opacity: 0; } }
+  .panel { display: grid; gap: var(--s-3); padding: var(--s-4); border-radius: var(--r-1); background: var(--surface); box-shadow: var(--lift); }
+  .adj { display: grid; grid-template-columns: 14px minmax(0, 1fr) 44px 44px 44px; align-items: center; gap: var(--s-2); }
+  .adj .token { width: 14px; height: 14px; }
   .adj .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .adj b { text-align: center; font-variant-numeric: tabular-nums; }
-  .adj .icon-btn { font-size: var(--fs-l); font-weight: var(--w-2); }
+  .adj .icon-btn { background: var(--surface-2); box-shadow: none; font-size: var(--fs-l); font-weight: var(--w-2); }
   .danger { color: var(--crit); }
   .rules-sheet { gap: var(--s-5); }
   .rules-sheet section { display: grid; gap: var(--s-2); }
+  .rules-sheet h3 { font-weight: var(--w-2); }
   .rules-sheet p, .rule-list { color: var(--ink-2); max-width: 62ch; }
   .rules-sheet b { color: var(--ink); }
-  .rule-list { margin: 0; padding-left: 20px; display: grid; gap: var(--s-2); }
+  .rule-list { padding-left: 20px; display: grid; gap: var(--s-2); }
   .rule-modes { display: grid; gap: var(--s-2); }
-  .rule-mode { display: flex; gap: var(--s-3); padding: var(--s-3); border-radius: var(--r-ctl); background: var(--surface); box-shadow: var(--shadow-1); }
+  .rule-mode { display: flex; gap: var(--s-3); padding: var(--s-3); border-radius: var(--r-1); background: var(--surface); box-shadow: var(--lift); }
   .rule-mode > div { min-width: 0; }
   .rule-mode p { font-size: var(--fs-s); }
-  .rm-icon { width: 40px; height: 40px; flex: none; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--mc) 16%, var(--surface)); color: var(--mc); }
+  .rm-icon { width: 40px; height: 40px; flex: none; border-radius: 10px; display: grid; place-items: center; background: var(--mc); color: var(--on); }
   .rm-icon svg { width: 22px; height: 22px; }
 
+  @media (max-height: 600px) {
+    .opt small { display: none; }
+    .card, .flip { min-height: 140px; }
+  }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
   }
+  @media (max-width: 360px) {
+    .pill-btn span { display: none; }
+    .pill-btn { width: 44px; padding: 0; justify-content: center; }
+  }
   @media (max-height: 640px) {
     .screen { gap: var(--s-4); }
-    .mode, .level { min-height: 72px; }
-    .flip { height: 184px; }
-    .gcard-body { min-height: 96px; padding-block: var(--s-4); }
-    .ring { width: min(56vw, 26vh, 220px); }
+    .intro .label { display: none; }
+    .opt, .switch-row { padding: var(--s-3) var(--s-4); }
+    .team-row input { height: 46px; }
+    .teams.dense .team-row input { height: 42px; }
+    .who { padding: var(--s-3) var(--s-4); }
+    .mode, .level { min-height: 64px; }
+    .pad-wrap { min-height: 120px; }
+    .card, .flip { min-height: 160px; }
+    .card.small { min-height: 120px; }
   }
 </style>
 
@@ -605,7 +509,7 @@
     teams: TEAMS.slice(0, 2).map((t) => ({ ...t, score: 0 })),
     current: 0, round: 1, turnsTaken: 0,
     roundTime: 120, target: 50, openRounds: true, sound: true, cfg: 2,
-    used: {}, modeRule: "frei",
+    used: {}, modeRule: "frei", setupStep: 1,
     turn: null, winner: null
   });
   let state = fresh();
@@ -678,7 +582,7 @@
     const bar = document.getElementById("rbar"); if (bar) bar.style.strokeDashoffset = RC * (1 - frac);
     const lin = document.getElementById("lin"); if (lin) lin.style.transform = "scaleX(" + frac + ")";
     const hint = document.getElementById("thint");
-    if (hint) hint.textContent = running ? (document.getElementById("rbar") ? "Tippen = Pause" : "Pause") : "Pausiert";
+    if (hint) hint.textContent = running ? (hint.closest(".time-pill") ? "" : "Tippen pausiert") : "Pausiert";
   }
   function loop() {
     if (!running) return;
@@ -768,6 +672,7 @@
     setTime(v) { state.roundTime = clampSetting("roundTime", v); render(); },
     setTarget(v) { state.target = clampSetting("target", v); render(); },
     step(arg) { const [k, d] = arg.split(":"); state[k] = clampSetting(k, state[k] + Number(d)); render(); },
+    setupStep(v) { state.setupStep = Math.min(3, Math.max(1, Number(v) || 1)); render(); window.scrollTo(0, 0); },
     toggleOpen() { state.openRounds = !state.openRounds; render(); },
     start() {
       ensureAudio();
@@ -797,7 +702,7 @@
       ensureAudio();
       state.turn.word = pickWord(state.turn.mode, state.turn.level);
       state.phase = "play"; strokes = [];
-      render(); startTimer(); beep(660, 0.08, 0, 0.2);
+      startTimer(); render(); beep(660, 0.08, 0, 0.2);
     },
     // play
     pause() { togglePause(); },
@@ -847,9 +752,11 @@
   // ---------------------------------------------------------------- Views
   const timeLabel = () => state.roundTime >= 60 ? fmt(state.roundTime * 1000) + " min" : state.roundTime + " s";
   const pips = (n) => `<span class="pips" role="img" aria-label="${LEVELS[n]}">${[1, 2, 3].map((i) => `<i class="${i <= n ? "" : "off"}"></i>`).join("")}</span>`;
-  const bar = (sub) => `<header class="bar"><div class="brand">Drei<span>er</span>lei</div><div class="bar-sub">${sub}</div><button class="icon-btn" data-act="rules" aria-label="Spielregeln">${ICONS.book}</button><button class="icon-btn" data-act="menu" aria-label="Menü">${ICONS.menu}</button></header>`;
-  const openBanner = () => `<div class="open-banner">${ICONS.all}<div><b>Offene Runde</b><small>Alle Teams dürfen raten. Jede Karte zählt für das Team, das sie zuerst errät.</small></div></div>`;
-  const cardFront = (tr) => `<span class="gcard-head">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span>${pips(tr.level)}</span><span class="gcard-body"><span class="gcard-word fit">${esc(tr.word)}</span></span>`;
+  const MARK = `<span class="mark" aria-hidden="true"><i class="m-erklaeren"></i><i class="m-zeichnen"></i><i class="m-pantomime"></i></span>`;
+  const bar = (sub) => `<header class="bar"><div class="brand">${MARK}Dreierlei</div><div class="bar-sub">${sub}</div><button class="icon-btn" data-act="rules" aria-label="Spielregeln">${ICONS.book}</button><button class="icon-btn" data-act="menu" aria-label="Menü">${ICONS.menu}</button></header>`;
+  const openBanner = () => `<div class="open-banner">${ICONS.all}<span><b>Offene Runde:</b> Alle Teams raten mit.</span></div>`;
+  const cardFront = (tr) => `<span class="card-top">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span>${pips(tr.level)}</span><span class="card-word fit">${esc(tr.word)}</span><span class="card-bot">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span></span>`;
+  const token = () => `<span class="token" aria-hidden="true"></span>`;
 
   // Board: one lane per team. With `from` (scores at turn start) the pawns walk to their new field.
   const board = (opts = {}) => {
@@ -860,7 +767,7 @@
       const before = opts.from && opts.from[i] !== undefined ? opts.from[i] : t.score;
       const gain = t.score - before;
       return `<div class="lane t-${t.c}${opts.current && i === state.current ? " current" : ""}">
-        <div class="lane-top">${opts.sorted ? `<span class="place">${rank + 1}.</span>` : ""}${ICONS.pawn}<span class="name">${esc(t.name)}</span>${gain > 0 ? `<span class="gain">+${gain}</span>` : ""}<b>${t.score}</b><span class="of">/ ${state.target}</span></div>
+        <div class="lane-top">${opts.sorted ? `<span class="place">${rank + 1}.</span>` : ""}${token()}<span class="name">${esc(t.name)}</span>${gain > 0 ? `<span class="gain">+${gain}</span>` : ""}<b>${t.score}</b><span class="of">/ ${state.target}</span></div>
         <div class="lane-track"><span class="lane-fill" data-to="${pct(t.score)}" style="width:${pct(before)}%"></span><span class="lane-pawn" data-to="${pct(t.score)}" style="left:${pct(before)}%">${ICONS.pawn}</span>${ICONS.flag}</div>
       </div>`;
     }).join("")}</div>`;
@@ -875,38 +782,46 @@
 
   const views = {
     setup() {
-      return `
-      <div class="bar"><div class="grow"></div><button class="pill-btn" data-act="rules">${ICONS.book}Spielregeln</button><button class="icon-btn" data-act="menu" aria-label="Einstellungen">${ICONS.gear}</button></div>
-      <div class="hero">
-        <div class="fan" aria-hidden="true">${MODE_KEYS.map((m) => `<div class="fan-card m-${m}"><span>${ICONS[m]}</span>${MODES[m].name}</div>`).join("")}</div>
-        <h1 class="title">Drei<span>er</span>lei</h1>
-        <p class="lede">Erklären, zeichnen, vorspielen: Begriffe raten mit einem Handy und zwei bis sechs Teams.</p>
-      </div>
-      <section class="group">
-        <h2 class="label">Teams</h2>
-        <div class="teams">
+      const step = state.setupStep || 1;
+      const top = `
+      <div class="bar"><div class="brand">${MARK}Dreierlei</div><div class="grow"></div><button class="pill-btn" data-act="rules" aria-label="Spielregeln">${ICONS.book}<span>Spielregeln</span></button><button class="icon-btn" data-act="menu" aria-label="Einstellungen">${ICONS.gear}</button></div>
+      <div class="steps" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="${step}" aria-label="Schritt ${step} von 3">${[1, 2, 3].map((i) => `<i class="${i <= step ? "on" : ""}"></i>`).join("")}</div>`;
+      const back = `<button class="btn btn-secondary" data-act="setupStep" data-arg="${step - 1}">Zurück</button>`;
+      if (step === 1) {
+        const dense = state.teams.length > 4;
+        return `${top}
+        <div class="intro"><p class="label">Schritt 1 von 3</p><h1 class="q">Wer spielt mit?</h1>${dense ? "" : `<p class="sub">Zwei bis sechs Teams. Tippe auf einen Namen, um ihn zu ändern.</p>`}</div>
+        <div class="teams${dense ? " dense" : ""}">
           ${state.teams.map((t, i) => `
-            <div class="team-row t-${t.c}">${ICONS.pawn}
+            <div class="team-row t-${t.c}">${token()}
               <input id="team-${t.c}" data-team="${i}" value="${esc(t.name)}" maxlength="24" aria-label="Name von Team ${i + 1}" autocomplete="off">
               ${state.teams.length > 2 ? `<button class="icon-btn" data-act="removeTeam" data-arg="${i}" aria-label="Team entfernen">${ICONS.close}</button>` : ""}
             </div>`).join("")}
           ${state.teams.length < 6 ? `<button class="add" data-act="addTeam">${ICONS.plus}Team hinzufügen</button>` : ""}
         </div>
-      </section>
-      <section class="group">
-        <h2 class="label">Spielmodus</h2>
-        <div class="opts" role="radiogroup">
-          <button class="opt" role="radio" id="rule-frei" aria-checked="${!alternating()}" data-act="setRule" data-arg="frei">${ICONS.shuffle}<b>Frei wählen</b><small>Jedes Team wählt die Darstellung selbst oder würfelt.</small></button>
-          <button class="opt" role="radio" id="rule-wechsel" aria-checked="${alternating()}" data-act="setRule" data-arg="wechsel">${ICONS.repeat}<b>Immer abwechseln</b><small>Jede Runde eine andere: Erklären, Zeichnen, Pantomime.</small></button>
+        <div class="grow"></div>
+        <div class="foot"><button class="btn btn-primary" data-act="setupStep" data-arg="2">Weiter${ICONS.skip}</button></div>`;
+      }
+      if (step === 2) {
+        return `${top}
+        <div class="intro"><p class="label">Schritt 2 von 3</p><h1 class="q">Wie wird gespielt?</h1></div>
+        <div class="opts" role="radiogroup" aria-label="Spielmodus">
+          <button class="opt" role="radio" id="rule-frei" aria-checked="${!alternating()}" data-act="setRule" data-arg="frei">${ICONS.shuffle}<span><b>Frei wählen</b><small>Jedes Team sucht sich die Darstellung aus oder würfelt.</small></span><i class="radio"></i></button>
+          <button class="opt" role="radio" id="rule-wechsel" aria-checked="${alternating()}" data-act="setRule" data-arg="wechsel">${ICONS.repeat}<span><b>Immer abwechseln</b><small>Runde für Runde: Erklären, Zeichnen, Pantomime.</small></span><i class="radio"></i></button>
         </div>
-      </section>
-      <section class="group"><h2 class="label">Zeit pro Runde</h2>${stepper("roundTime", "Sekunden", 10, "setTime", [60, 90, 120, 180])}</section>
-      <section class="group"><h2 class="label">Punkte zum Sieg</h2>${stepper("target", "Punkte", 5, "setTarget", [30, 50, 80, 100])}</section>
-      <button class="switch-row" id="openRounds" role="switch" aria-checked="${state.openRounds}" data-act="toggleOpen">
-        <div><b>Offene Runden</b><small>Ab und zu dürfen alle Teams mitraten. Jede Karte zählt für das Team, das sie zuerst errät.</small></div>
-        <span class="switch"></span>
-      </button>
-      <div class="cta"><button class="btn btn-primary" data-act="start">${ICONS.play}Spiel starten</button></div>`;
+        <button class="switch-row" id="openRounds" role="switch" aria-checked="${state.openRounds}" data-act="toggleOpen">
+          <span><b>Offene Runden</b><small>Ab und zu dürfen alle Teams mitraten. Jede Karte zählt für das Team, das sie zuerst errät.</small></span>
+          <span class="switch"></span>
+        </button>
+        <div class="grow"></div>
+        <div class="foot row-even">${back}<button class="btn btn-primary" data-act="setupStep" data-arg="3">Weiter${ICONS.skip}</button></div>`;
+      }
+      return `${top}
+        <div class="intro"><p class="label">Schritt 3 von 3</p><h1 class="q">Wie lange spielt ihr?</h1></div>
+        <section class="group"><h2 class="label">Zeit pro Runde</h2>${stepper("roundTime", "Sekunden", 10, "setTime", [60, 90, 120, 180])}</section>
+        <section class="group"><h2 class="label">Punkte zum Sieg</h2>${stepper("target", "Punkte", 5, "setTarget", [30, 50, 80, 100])}</section>
+        <div class="grow"></div>
+        <div class="foot row-even">${back}<button class="btn btn-primary" data-act="start">Los geht’s</button></div>`;
     },
 
     turn() {
@@ -915,15 +830,14 @@
       return `
       ${bar("Runde " + state.round)}
       <div class="who t-${t.c}">
-        <span class="who-pawn">${ICONS.pawn}</span>
         <div class="who-text"><p class="label">Am Zug</p><h2>${esc(t.name)}</h2></div>
         <div class="need"><b>${need}</b><span>bis zum Ziel</span></div>
       </div>
       <section class="group">
         <div class="label-row"><h3 class="label">Darstellung</h3>${lock ? `<span class="lock">${ICONS.lock}Runde ${state.round} ist vorgegeben</span>` : ""}</div>
         <div class="modes${lock ? " locked" : ""}" role="radiogroup" aria-label="Darstellung">
-          ${MODE_KEYS.map((m) => `<button class="mode m-${m}" role="radio" id="mode-${m}" aria-checked="${tr.mode === m}" ${lock ? "disabled" : `data-act="mode" data-arg="${m}"`}><span class="mode-ic">${ICONS[m]}</span>${MODES[m].name}</button>`).join("")}
-          ${lock ? "" : `<button class="mode" data-act="roll" aria-label="Darstellung auswürfeln"><span class="mode-ic">${ICONS.dice}</span>Würfeln</button>`}
+          ${MODE_KEYS.map((m) => `<button class="mode m-${m}" role="radio" id="mode-${m}" aria-checked="${tr.mode === m}" ${lock ? "disabled" : `data-act="mode" data-arg="${m}"`}>${ICONS[m]}${MODES[m].name}</button>`).join("")}
+          ${lock ? "" : `<button class="mode" data-act="roll" aria-label="Darstellung auswürfeln">${ICONS.dice}Würfeln</button>`}
         </div>
         <p class="hint-text">${lock ? `<b>Alle Teams ${MODES[tr.mode].verb}.</b> Nächste Runde: ${MODES[roundMode(state.round + 1)].name}. ` : ""}${MODES[tr.mode].rule}</p>
       </section>
@@ -935,15 +849,15 @@
       </section>
       ${tr.open ? openBanner() : ""}
       <div class="grow"></div>
-      <div class="cta"><p class="handoff-hint">${ICONS.phone}Handy an die Person geben, die darstellt</p><button class="btn btn-primary" data-act="draw">Karte ziehen · ${timeLabel()}</button></div>`;
+      <div class="foot"><p class="handoff-hint">${ICONS.phone}Handy an die Person geben, die darstellt</p><button class="btn btn-primary" data-act="draw">Karte ziehen · ${timeLabel()}</button></div>`;
     },
 
     play() {
       const t = team(), tr = state.turn, m = MODES[tr.mode];
       const menuBtn = `<button class="icon-btn" data-act="menu" aria-label="Menü">${ICONS.menu}</button>`;
       const timePill = `<button class="time-pill" data-act="pause" aria-label="Pause oder weiter"><span class="time" id="time">${fmt(tr.remaining)}</span><span class="thint" id="thint"></span></button>`;
-      const head = `<div class="playhead"><span class="chip-team t-${t.c}">${ICONS.pawn}<span>${esc(t.name)}</span></span><span class="chip-mode m-${tr.mode}">${ICONS[tr.mode]}${m.name}${pips(tr.level)}</span><span class="grow"></span>${menuBtn}</div>`;
-      const flip = (slim) => `<button class="flip m-${tr.mode}${slim ? " slim" : ""}" id="peek" aria-label="Gedrückt halten, um den Begriff zu sehen"><span class="flip-inner"><span class="gcard face-back"><span class="back-emblem">${ICONS[tr.mode]}</span><span class="back-hint">${ICONS.eye}Zum Ansehen gedrückt halten</span></span><span class="gcard face-front">${cardFront(tr)}</span></span></button>`;
+      const head = `<div class="playhead"><span class="chip-team t-${t.c}">${token()}<span>${esc(t.name)}</span></span><span class="chip-mode m-${tr.mode}">${ICONS[tr.mode]}${m.name}${pips(tr.level)}</span><span class="grow"></span>${menuBtn}</div>`;
+      const flip = (slim) => `<button class="flip m-${tr.mode}${slim ? " slim" : " play-card"}" id="peek" aria-label="Gedrückt halten, um den Begriff zu sehen"><span class="flip-inner"><span class="card face-back"><span class="back-icon">${ICONS[tr.mode]}</span><span class="back-hint">${ICONS.eye}Zum Ansehen gedrückt halten</span></span><span class="card face-front">${cardFront(tr)}</span></span></button>`;
       const got = tr.results.filter((r) => r.team !== null).length;
       const tally = `<p class="tally">${got ? `${ICONS.check}${got} erraten · +${got * tr.level} Punkte` : `So viele Karten wie möglich · ${pts(tr.level)} je Karte`}</p>`;
       const btns = tally + (tr.open
@@ -965,42 +879,34 @@
       }
       return `
       ${head}
-      <div class="stage m-${tr.mode}">
-        <button class="ring" data-act="pause" aria-label="Pause oder weiter">
-          <svg viewBox="0 0 320 320" aria-hidden="true">
-            <circle class="face" cx="160" cy="160" r="132"/>
-            <circle class="trk" cx="160" cy="160" r="146"/>
-            <circle class="bar" id="rbar" cx="160" cy="160" r="146" style="stroke-dasharray:${RC}"/>
-          </svg>
-          <span class="readout"><span class="time" id="time">${fmt(tr.remaining)}</span><span class="thint" id="thint"></span></span>
-        </button>
-      </div>
-      ${tr.mode === "erklaeren" ? `<div class="gcard m-${tr.mode}" id="wordcard">${cardFront(tr)}</div>` : flip(false)}
+      <button class="clock" data-act="pause" aria-label="Pause oder weiter"><span class="time" id="time">${fmt(tr.remaining)}</span><span class="thint" id="thint"></span></button>
+      <div class="lin m-${tr.mode}"><span id="lin"></span></div>
+      ${tr.mode === "erklaeren" ? `<div class="card play-card m-${tr.mode}" id="wordcard">${cardFront(tr)}</div>` : flip(false)}
       ${btns}`;
     },
 
     result() {
       const t = team(), tr = state.turn, lv = tr.level;
       const got = tr.results.filter((r) => r.team !== null);
-      const chips = tr.results.length ? `<section class="group"><h3 class="label">Karten dieser Runde</h3><div class="chips">${tr.results.map((r) => r.team === null
-        ? `<span class="wchip miss">${ICONS.x}<span>${esc(r.word)}</span></span>`
-        : `<span class="wchip hit t-${team(r.team).c}">${tr.open ? `<i class="dot"></i>` : ICONS.check}<span>${esc(r.word)}</span><b>+${lv}</b></span>`).join("")}</div></section>` : "";
+      const chips = tr.results.length ? `<section class="group"><h3 class="label">Karten dieser Runde</h3><ul class="words">${tr.results.map((r) => r.team === null
+        ? `<li class="miss">${ICONS.x}<span>${esc(r.word)}</span></li>`
+        : `<li class="hit t-${team(r.team).c}">${tr.open ? token() : ICONS.check}<span>${esc(r.word)}</span><b>+${lv}</b></li>`).join("")}</ul></section>` : "";
       if (tr.lastOpen) {
         const answer = tr.open
           ? `<div class="pick">${state.teams.map((x, i) => `<button class="btn btn-team t-${x.c}" data-act="last" data-arg="${i}"><span>${esc(x.name)}</span></button>`).join("")}<button class="btn btn-secondary" data-act="last" data-arg="none">Niemand</button></div>`
           : `<div class="row-even"><button class="btn btn-secondary" data-act="last" data-arg="none">Nein</button><button class="btn btn-ok" data-act="last" data-arg="${state.current}">${ICONS.check}Ja, erraten</button></div>`;
         return `
         ${bar(esc(t.name))}
-        <div class="timeup">${ICONS.clock}<p class="label">Zeit um</p><h2>${tr.open ? "Hat ein Team diese Karte noch rechtzeitig erraten?" : "Wurde diese Karte noch rechtzeitig erraten?"}</h2></div>
-        <div class="gcard small m-${tr.mode}">${cardFront(tr)}</div>
+        <div class="timeup"><p class="label">${ICONS.clock}Zeit um</p><h2>${tr.open ? "Hat ein Team diese Karte noch rechtzeitig erraten?" : "Wurde diese Karte noch rechtzeitig erraten?"}</h2></div>
+        <div class="card small m-${tr.mode}">${cardFront(tr)}</div>
         ${chips}
         <div class="grow"></div>
-        <div class="cta">${answer}</div>`;
+        <div class="foot">${answer}</div>`;
       }
       let hero;
       if (state.winner !== null) {
         const w = team(state.winner);
-        hero = `<div class="summary champ t-${w.c}"><span class="trophy">${ICONS.trophy}</span><p class="label">Ziel erreicht</p><p class="big fit">${esc(w.name)}</p><p class="sub">hat ${w.score} Punkte</p></div>`;
+        hero = `<div class="summary champ t-${w.c}"><p class="label">Ziel erreicht</p><p class="big fit">${esc(w.name)}</p><p class="sub">hat ${w.score} Punkte</p></div>`;
       } else if (tr.open) {
         hero = `<div class="summary${got.length ? " good" : ""}"><p class="label">${tr.timeUp ? "Zeit um" : "Runde beendet"} · offene Runde</p><p class="big">${got.length}</p><p class="sub">${got.length === 1 ? "Karte" : "Karten"} erraten</p></div>`;
       } else {
@@ -1013,7 +919,7 @@
       ${chips}
       <section class="group"><h3 class="label">Spielfeld</h3>${board({ from: tr.before, current: true })}</section>
       <div class="grow"></div>
-      <div class="cta">${state.winner !== null
+      <div class="foot sticky">${state.winner !== null
         ? `<button class="btn btn-primary" data-act="next">${ICONS.trophy}Zur Siegerehrung</button>`
         : `<button class="btn btn-primary" data-act="next"><span>Weiter: ${esc(nextTeam.name)}</span>${ICONS.skip}</button>`}</div>`;
     },
@@ -1028,7 +934,7 @@
       </div>
       <section class="group"><h3 class="label">Endstand</h3>${board({ sorted: true })}</section>
       <div class="grow"></div>
-      <div class="cta row-even"><button class="btn btn-secondary" data-act="newGame">Neues Spiel</button><button class="btn btn-primary" data-act="rematch">Revanche</button></div>`;
+      <div class="foot row-even"><button class="btn btn-secondary" data-act="newGame">Neues Spiel</button><button class="btn btn-primary" data-act="rematch">Revanche</button></div>`;
     }
   };
 
@@ -1037,10 +943,10 @@
     return `
       <div class="sheet-body rules-sheet" role="dialog" aria-label="Spielregeln">
         <div class="bar"><h2 class="grow">Spielregeln</h2><button class="icon-btn" data-act="closeMenu" aria-label="Schließen">${ICONS.close}</button></div>
-        <section><h3 class="label">Ziel</h3>
+        <section><h3>Ziel</h3>
           <p>Die Teams erraten Begriffe, die eine Person aus dem eigenen Team <b>erklärt</b>, <b>zeichnet</b> oder als <b>Pantomime</b> vorspielt. Das erste Team mit ${state.target} Punkten gewinnt sofort.</p>
         </section>
-        <section><h3 class="label">Ein Zug</h3>
+        <section><h3>Ein Zug</h3>
           <ol class="rule-list">
             <li>Das Team am Zug wählt die Darstellung (oder würfelt) und die Schwierigkeit. Im Modus <b>Immer abwechseln</b> ist die Darstellung vorgegeben.</li>
             <li>Eine Person aus dem Team nimmt das Handy und tippt auf <b>Karte ziehen</b>. Die erste Karte erscheint, die Zeit läuft (${time}).</li>
@@ -1048,22 +954,22 @@
             <li>Ist die Zeit um, zählt die letzte Karte nur, wenn sie noch rechtzeitig erraten wurde. Dann ist das nächste Team dran, am besten mit einer anderen Person.</li>
           </ol>
         </section>
-        <section><h3 class="label">Die drei Darstellungen</h3>
+        <section><h3>Die drei Darstellungen</h3>
           <div class="rule-modes">
             ${MODE_KEYS.map((m) => `<div class="rule-mode"><span class="rm-icon m-${m}">${ICONS[m]}</span><div><b>${MODES[m].name}</b><p>${MODES[m].rule} ${m === "erklaeren" ? "Die Karte liegt offen auf dem Bildschirm." : "Die Karte liegt verdeckt. Wer sie gedrückt hält, sieht den Begriff."}</p></div></div>`).join("")}
           </div>
         </section>
-        <section><h3 class="label">Schwierigkeit und Punkte</h3>
+        <section><h3>Schwierigkeit und Punkte</h3>
           <p>Jede Karte zählt <b>1 Punkt</b> (leicht), <b>2 Punkte</b> (mittel) oder <b>3 Punkte</b> (schwer). Für jede Darstellung gibt es eigene Begriffe: Leicht ist sofort erkennbar, mittel braucht mehrere Schritte, schwer sind abstrakte Begriffe, Märchen, Filme und Redewendungen.</p>
         </section>
-        <section><h3 class="label">Spielmodi</h3>
+        <section><h3>Spielmodi</h3>
           <p><b>Frei wählen:</b> Jedes Team sucht sich die Darstellung vor seinem Zug aus oder würfelt.</p>
           <p><b>Immer abwechseln:</b> Runde 1 wird erklärt, Runde 2 gezeichnet, Runde 3 pantomimisch gespielt, danach geht es von vorn los. In jeder Runde ist jedes Team einmal dran.</p>
         </section>
-        <section><h3 class="label">Offene Runden</h3>
+        <section><h3>Offene Runden</h3>
           <p>Ist die Einstellung an, dürfen etwa in jedem sechsten Zug alle Teams mitraten. Statt „Erraten!“ gibt es dann einen Knopf pro Team: Wer eine Karte zuerst errät, bekommt die Punkte.</p>
         </section>
-        <section><h3 class="label">Gut zu wissen</h3>
+        <section><h3>Gut zu wissen</h3>
           <p>Ein Tipp auf den Timer pausiert die Runde. Im Menü lassen sich Punkte korrigieren und Runden vorzeitig beenden. Der Spielstand bleibt erhalten, auch wenn die Seite neu geladen wird.</p>
         </section>
         <button class="btn btn-primary" data-act="closeMenu">${state.phase === "play" ? "Weiterspielen" : "Verstanden"}</button>
@@ -1078,12 +984,12 @@
       <div class="sheet-body" role="dialog" aria-label="Menü">
         <div class="bar"><h2 class="grow">${inGame ? "Menü" : "Einstellungen"}</h2><button class="icon-btn" data-act="closeMenu" aria-label="Schließen">${ICONS.close}</button></div>
         <button class="switch-row" role="switch" aria-checked="${state.sound}" data-act="sound">
-          <div><b>Ton</b><small>Ticken in den letzten 10 Sekunden und Alarm bei Zeitende.</small></div><span class="switch"></span>
+          <span><b>Ton</b><small>Ticken in den letzten 10 Sekunden und Alarm bei Zeitende.</small></span><span class="switch"></span>
         </button>
         ${inGame ? `
         <section class="panel"><h3 class="label">Punkte korrigieren</h3>
           ${state.teams.map((t, i) => `
-            <div class="adj t-${t.c}">${ICONS.pawn}<span class="name">${esc(t.name)}</span>
+            <div class="adj t-${t.c}">${token()}<span class="name">${esc(t.name)}</span>
               <button class="icon-btn" data-act="adj" data-arg="${i}:-1" aria-label="Minus">−</button><b>${t.score}</b><button class="icon-btn" data-act="adj" data-arg="${i}:1" aria-label="Plus">+</button>
             </div>`).join("")}
         </section>
@@ -1212,8 +1118,7 @@
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const g = c.getContext("2d"), dpr = window.devicePixelRatio || 1;
     const r = c.getBoundingClientRect(); c.width = r.width * dpr; c.height = r.height * dpr; g.scale(dpr, dpr);
-    const cs = getComputedStyle(c.parentElement);
-    const cols = ["--accent", "--on-color", "--surface", "--m-erklaeren", "--m-zeichnen", "--m-pantomime"].map((v) => cs.getPropertyValue(v).trim());
+    const cols = ["#FFFFFF", "rgba(255,255,255,.55)", "#FFD866", "#FFB199", "#B8F0D8"];
     const bits = Array.from({ length: 70 }, () => ({ x: Math.random() * r.width, y: -Math.random() * r.height, vy: 1 + Math.random() * 2.2, vx: -0.6 + Math.random() * 1.2, s: 4 + Math.random() * 5, a: Math.random() * 6, col: rand(cols) }));
     let frames = 0;
     (function step() {
