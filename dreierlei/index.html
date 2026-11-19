@@ -120,7 +120,7 @@
   .btn-team { background: var(--team); color: var(--on); }
   .btn-secondary { background: var(--surface); color: var(--ink); box-shadow: var(--lift); }
   .btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: var(--s-3); }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: var(--s-3); }
   .row-even { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-3); }
   .foot { display: grid; gap: var(--s-2); }
   .foot.sticky { position: sticky; bottom: 0; z-index: 2; margin-bottom: calc(-1 * var(--s-5)); padding-block: var(--s-3) var(--s-5); background: linear-gradient(to bottom, transparent, var(--bg) var(--s-3)); }
@@ -284,10 +284,15 @@
   .card-bot { transform: rotate(180deg); opacity: .8; }
   .card-word { position: relative; display: block; max-width: 100%; margin: auto 0; text-align: center; font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1.02; letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: normal; }
   .play-card { flex: 1; }
-  .taboo { position: relative; display: grid; justify-items: center; gap: var(--s-1); }
-  .taboo-label { font-size: var(--fs-s); opacity: .8; }
-  .taboo-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
-  .taboo-list span { padding: 2px var(--s-2); border-radius: 8px; background: rgb(255 255 255 / .2); font-size: var(--fs-s); font-weight: var(--w-2); }
+  .taboo { position: relative; display: grid; gap: var(--s-1); padding: var(--s-3) var(--s-4); border-radius: 12px; background: var(--surface); color: var(--ink); text-align: left; }
+  .taboo-label { display: flex; align-items: center; gap: 6px; font-size: var(--fs-s); color: var(--ink-3); }
+  .taboo-label svg { width: 16px; height: 16px; color: var(--mc); }
+  .taboo-list { display: grid; }
+  .taboo-list span { display: flex; align-items: center; gap: var(--s-2); padding-block: 3px; font-size: var(--fs-m); font-weight: var(--w-2); line-height: 1.25; }
+  .taboo-list span + span { border-top: 1px solid var(--line); }
+  .taboo-list span::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--mc); flex: none; }
+  .card.tight .taboo { padding-block: var(--s-2); }
+  .card.tight .taboo-list span { padding-block: 1px; font-size: var(--fs-s); }
   .deal { animation: deal .3s cubic-bezier(.2,.8,.2,1); }
   @keyframes deal { from { transform: translateX(40px) rotate(4deg); opacity: 0; } }
 
@@ -411,6 +416,8 @@
 
   @media (max-height: 600px) {
     .opt small { display: none; }
+    .clock .time { font-size: var(--fs-l); }
+    .clock .thint { display: none; }
     .card, .flip { min-height: 140px; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -425,6 +432,8 @@
   }
   @media (max-height: 640px) {
     .screen { gap: var(--s-4); }
+    .card-bot { display: none; }
+    .tally { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; text-align: center; }
     .intro .label { display: none; }
     .opt, .switch-row { padding: var(--s-3) var(--s-4); }
     .team-row input { height: 46px; }
@@ -481,6 +490,7 @@
     trophy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg>',
     clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>',
     skip: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    ban: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg>',
     menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
     close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
     plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
@@ -769,7 +779,7 @@
   const tabuFor = (tr) => (tr.mode === "erklaeren" && tr.level > 1 && TABU[tr.word]) || [];
   const cardFront = (tr) => {
     const tabu = tabuFor(tr);
-    return `<span class="card-top">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span>${pips(tr.level)}</span><span class="card-word fit">${esc(tr.word)}</span>${tabu.length ? `<span class="taboo"><span class="taboo-label">Nicht sagen</span><span class="taboo-list">${tabu.map((w) => `<span>${esc(w)}</span>`).join("")}</span></span>` : ""}<span class="card-bot">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span></span>`;
+    return `<span class="card-top">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span>${pips(tr.level)}</span><span class="card-word fit">${esc(tr.word)}</span>${tabu.length ? `<span class="taboo"><span class="taboo-label">${ICONS.ban}Nicht sagen</span><span class="taboo-list">${tabu.map((w) => `<span>${esc(w)}</span>`).join("")}</span></span>` : ""}<span class="card-bot">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span></span>`;
   };
   const token = () => `<span class="token" aria-hidden="true"></span>`;
 
@@ -1025,7 +1035,9 @@
       const lineH = () => parseFloat(getComputedStyle(el).lineHeight) || size * 1.05;
       const card = el.closest(".card");
       const tooBig = () => el.scrollWidth > el.clientWidth + 1 || el.offsetHeight > lineH() * 2 + 2 || (card && card.scrollHeight > card.clientHeight + 1);
+      if (card) card.classList.remove("tight");
       while (tooBig() && size > 20) { size -= 2; el.style.fontSize = size + "px"; }
+      if (card && tooBig()) { card.classList.add("tight"); while (tooBig() && size > 18) { size -= 2; el.style.fontSize = size + "px"; } }
       if (tooBig()) el.style.overflowWrap = "anywhere";
     });
   }
