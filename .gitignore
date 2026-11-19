@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 *.html
+!activity-timer/*.html
+!dreierlei/*.html

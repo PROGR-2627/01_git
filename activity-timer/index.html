@@ -1,0 +1,478 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#2F4BFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Activity Timer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Inter:wght@400;500;600&display=swap">
+<style>
+  /* Layout: one-screen party tool — category on top, giant tap-to-start ring in the middle, duration + controls at thumb height. */
+  :root {
+    --bg: #EEF1F7;
+    --surface: #FFFFFF;
+    --ink: #141A2E;
+    --muted: #5B6480;
+    --line: #D5DAE6;
+    --track: #DCE1EC;
+    --accent: #2F4BFF;
+    --accent-ink: #FFFFFF;
+    --warn: #E39400;
+    --crit: #E5383B;
+    --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1324; --surface: #171D33; --ink: #EEF1FA; --muted: #9AA3BF;
+      --line: #283050; --track: #232A45; --accent: #6F84FF; --accent-ink: #0E1324;
+      --warn: #FFB938; --crit: #FF5A5F; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1324; --surface: #171D33; --ink: #EEF1FA; --muted: #9AA3BF;
+    --line: #283050; --track: #232A45; --accent: #6F84FF; --accent-ink: #0E1324;
+    --warn: #FFB938; --crit: #FF5A5F; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    overscroll-behavior: none;
+  }
+  .app {
+    height: 100%;
+    min-height: 520px;
+    max-width: 520px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding-block: 16px 20px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand {
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .brand span { color: var(--accent); }
+  .icon-btn {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .icon-btn svg { width: 22px; height: 22px; }
+  .icon-btn[aria-pressed="false"] { color: var(--muted); }
+
+  /* Category picker */
+  .cats { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 8px; }
+  .cat {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    min-height: 64px;
+    padding: 8px 4px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--muted);
+    font: 600 12.5px/1.1 var(--font-body);
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s, transform .1s;
+  }
+  .cat svg { width: 24px; height: 24px; }
+  .cat[aria-checked="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .cat:active { transform: scale(0.97); }
+  .dice { width: 56px; }
+
+  /* Ring */
+  .stage { flex: 1; display: grid; place-items: center; min-height: 0; }
+  .ring {
+    position: relative;
+    width: min(82vw, 44vh, 360px);
+    aspect-ratio: 1;
+    max-width: 100%;
+    border: 0; padding: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 50%;
+    touch-action: manipulation;
+  }
+  .ring svg { width: 100%; height: 100%; display: block; transform: rotate(-90deg); }
+  .ring .track { fill: none; stroke: var(--track); stroke-width: 14; }
+  .ring .bar {
+    fill: none; stroke: var(--accent); stroke-width: 14; stroke-linecap: round;
+    transition: stroke .3s;
+  }
+  .ring .face { fill: var(--surface); }
+  [data-phase="warn"] .ring .bar { stroke: var(--warn); }
+  [data-phase="crit"] .ring .bar { stroke: var(--crit); }
+  .readout {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    pointer-events: none;
+  }
+  .readout .label {
+    font: 600 12px/1 var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .readout .time {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: 88%;
+    font-size: clamp(64px, min(22vw, 12vh), 104px);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    transition: color .3s;
+  }
+  [data-phase="warn"] .readout .time { color: var(--warn); }
+  [data-phase="crit"] .readout .time { color: var(--crit); }
+  .readout .hint { font: 500 13px/1 var(--font-body); color: var(--muted); margin-top: 6px; }
+  [data-phase="crit"][data-running="true"] .ring { animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 50% { transform: scale(1.025); } }
+
+  /* Duration + controls */
+  .dur {
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding: 4px; gap: 4px;
+    border-radius: 16px;
+    background: var(--track);
+  }
+  .dur button {
+    min-height: 52px;
+    border: 0; border-radius: 12px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: 100%;
+    font-size: 20px;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  .dur button small { font: 600 13px var(--font-body); margin-left: 2px; }
+  .dur button[aria-checked="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgb(0 0 0 / .12); }
+
+  .controls { display: grid; grid-template-columns: 1fr 2.2fr; gap: 10px; }
+  .btn {
+    min-height: 60px;
+    border-radius: 16px;
+    font: 700 18px/1 var(--font-body);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    transition: transform .1s;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn svg { width: 22px; height: 22px; }
+  .btn-ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); }
+  [data-running="true"] .btn-primary { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  /* Time's up */
+  .done {
+    position: fixed; inset: 0; z-index: 20;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    background: var(--crit);
+    color: #FFFFFF;
+    text-align: center;
+    padding: 24px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px));
+    cursor: pointer;
+    animation: flash .5s steps(2) 4;
+  }
+  .done h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-stretch: 118%;
+    font-size: clamp(56px, 18vw, 120px);
+    line-height: .95;
+    text-wrap: balance;
+  }
+  .done p { margin: 0; font: 500 16px var(--font-body); opacity: .9; }
+  @keyframes flash { 50% { background: var(--ink); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  @media (max-height: 600px) {
+    .cat { min-height: 52px; } .cat svg { width: 20px; height: 20px; }
+    .btn { min-height: 52px; } .dur button { min-height: 44px; }
+    .app { gap: 12px; }
+  }
+</style>
+
+<div class="app" id="app" data-phase="ok" data-running="false">
+  <header>
+    <h1 class="brand">Activity<span>.</span>Timer</h1>
+    <button class="icon-btn" id="soundBtn" aria-pressed="true" aria-label="Ton an/aus" title="Ton an/aus">
+      <svg id="soundOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+      <svg id="soundOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="m16 9 5 6"/><path d="m21 9-5 6"/></svg>
+    </button>
+  </header>
+
+  <div class="cats" role="radiogroup" aria-label="Darstellungsart">
+    <button class="cat" role="radio" aria-checked="true" data-cat="Erklären" id="cat-erklaeren">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>
+      Erklären
+    </button>
+    <button class="cat" role="radio" aria-checked="false" data-cat="Zeichnen" id="cat-zeichnen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/><path d="m14.5 5.5 3 3"/></svg>
+      Zeichnen
+    </button>
+    <button class="cat" role="radio" aria-checked="false" data-cat="Pantomime" id="cat-pantomime">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M5 9l7 1.5L19 9"/><path d="M12 10.5V15l-3 6"/><path d="m12 15 3 6"/></svg>
+      Pantomime
+    </button>
+    <button class="cat dice" id="diceBtn" aria-label="Zufällige Darstellungsart" title="Zufall">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.5" cy="8.5" r="1.1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.1" fill="currentColor"/><circle cx="12" cy="12" r="1.1" fill="currentColor"/></svg>
+      Zufall
+    </button>
+  </div>
+
+  <div class="stage">
+    <button class="ring" id="ring" aria-label="Timer starten oder pausieren">
+      <svg viewBox="0 0 320 320" aria-hidden="true">
+        <circle class="face" cx="160" cy="160" r="133"/>
+        <circle class="track" cx="160" cy="160" r="146"/>
+        <circle class="bar" id="bar" cx="160" cy="160" r="146"/>
+      </svg>
+      <span class="readout" aria-live="off">
+        <span class="label" id="catLabel">Erklären</span>
+        <span class="time" id="time">1:00</span>
+        <span class="hint" id="hint">Tippen zum Starten</span>
+      </span>
+    </button>
+  </div>
+
+  <div class="dur" role="radiogroup" aria-label="Rundenzeit">
+    <button role="radio" aria-checked="true" data-sec="60" id="dur-60">60<small>s</small></button>
+    <button role="radio" aria-checked="false" data-sec="120" id="dur-120">120<small>s</small></button>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-ghost" id="resetBtn" aria-label="Zurücksetzen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+    </button>
+    <button class="btn btn-primary" id="startBtn">
+      <svg id="icPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>
+      <svg id="icPause" viewBox="0 0 24 24" fill="currentColor" hidden><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+      <span id="startLabel">Start</span>
+    </button>
+  </div>
+</div>
+
+<div class="done" id="done" hidden role="alertdialog" aria-label="Zeit um">
+  <h2>Zeit um!</h2>
+  <p>Tippen für die nächste Runde</p>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const show = (el, on) => el.toggleAttribute("hidden", !on);
+  const app = $("app"), bar = $("bar"), timeEl = $("time"), hintEl = $("hint");
+  const startBtn = $("startBtn"), startLabel = $("startLabel");
+  const doneEl = $("done");
+  const R = 146, CIRC = 2 * Math.PI * R;
+  bar.style.strokeDasharray = CIRC;
+
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem("activity-timer:" + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem("activity-timer:" + k, JSON.stringify(v)); } catch {} }
+  };
+
+  let total = store.get("total", 60) === 120 ? 120 : 60;
+  let sound = store.get("sound", true) !== false;
+  let remaining = total * 1000;
+  let running = false, endAt = 0, raf = 0, endTimer = 0, lastSec = null;
+  let wakeLock = null, audio = null;
+
+  // ---------- Sound ----------
+  function ensureAudio() {
+    if (!audio) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) { try { audio = new AC(); } catch { audio = null; } }
+    }
+    if (audio && audio.state === "suspended") audio.resume().catch(() => {});
+  }
+  function beep(freq, dur, when = 0, vol = 0.25, type = "sine") {
+    if (!sound || !audio) return;
+    const t = audio.currentTime + when;
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(audio.destination);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+  const tick = (s) => beep(s <= 3 ? 1320 : 990, 0.07, 0, s <= 3 ? 0.3 : 0.15, "square");
+  function alarm() {
+    for (let i = 0; i < 3; i++) { beep(880, 0.22, i * 0.32, 0.4, "square"); beep(660, 0.22, i * 0.32 + 0.12, 0.3, "square"); }
+    beep(523, 0.7, 1.0, 0.4, "sawtooth");
+  }
+  function buzz(p) { try { navigator.vibrate && navigator.vibrate(p); } catch {} }
+
+  // ---------- Wake lock ----------
+  async function lockScreen() {
+    try { if ("wakeLock" in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request("screen"); wakeLock.addEventListener("release", () => { wakeLock = null; }); } } catch { wakeLock = null; }
+  }
+  function unlockScreen() { try { wakeLock && wakeLock.release(); } catch {} wakeLock = null; }
+
+  // ---------- Render ----------
+  function fmt(ms) {
+    const s = Math.ceil(ms / 1000);
+    return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  }
+  function render() {
+    const frac = Math.max(0, Math.min(1, remaining / (total * 1000)));
+    bar.style.strokeDashoffset = CIRC * (1 - frac);
+    timeEl.textContent = fmt(remaining);
+    const s = Math.ceil(remaining / 1000);
+    app.dataset.phase = s <= 5 ? "crit" : s <= 15 ? "warn" : "ok";
+    app.dataset.running = String(running);
+    show($("icPlay"), !running); show($("icPause"), running);
+    const fresh = remaining === total * 1000;
+    startLabel.textContent = running ? "Pause" : fresh ? "Start" : "Weiter";
+    hintEl.textContent = running ? "Tippen für Pause" : fresh ? "Tippen zum Starten" : "Pausiert";
+    document.title = running ? fmt(remaining) + " · Activity Timer" : "Activity Timer";
+  }
+
+  // ---------- Timer ----------
+  function loop() {
+    if (!running) return;
+    remaining = Math.max(0, endAt - performance.now());
+    const s = Math.ceil(remaining / 1000);
+    if (s !== lastSec) {
+      lastSec = s;
+      if (s > 0 && s <= 10) tick(s);
+      if (s === 10) buzz(80);
+    }
+    render();
+    if (remaining <= 0) return finish();
+    raf = requestAnimationFrame(loop);
+  }
+  function start() {
+    ensureAudio();
+    if (remaining <= 0) remaining = total * 1000;
+    endAt = performance.now() + remaining;
+    running = true;
+    lastSec = Math.ceil(remaining / 1000);
+    clearTimeout(endTimer);
+    endTimer = setTimeout(() => { if (running) { remaining = 0; finish(); } }, remaining + 50);
+    lockScreen();
+    beep(660, 0.08, 0, 0.2);
+    raf = requestAnimationFrame(loop);
+    render();
+  }
+  function pause() {
+    if (!running) return;
+    remaining = Math.max(0, endAt - performance.now());
+    running = false;
+    cancelAnimationFrame(raf); clearTimeout(endTimer);
+    unlockScreen();
+    render();
+  }
+  function reset() {
+    running = false;
+    cancelAnimationFrame(raf); clearTimeout(endTimer);
+    remaining = total * 1000;
+    unlockScreen();
+    render();
+  }
+  function finish() {
+    if (!running) return;
+    running = false;
+    remaining = 0;
+    cancelAnimationFrame(raf); clearTimeout(endTimer);
+    render();
+    alarm();
+    buzz([400, 150, 400, 150, 800]);
+    doneEl.hidden = false;
+  }
+  function toggle() { running ? pause() : start(); }
+
+  // ---------- Controls ----------
+  startBtn.addEventListener("click", toggle);
+  $("ring").addEventListener("click", toggle);
+  $("resetBtn").addEventListener("click", reset);
+  doneEl.addEventListener("click", () => { doneEl.hidden = true; unlockScreen(); reset(); });
+
+  document.querySelectorAll(".dur button").forEach((b) => {
+    b.addEventListener("click", () => {
+      total = Number(b.dataset.sec);
+      store.set("total", total);
+      document.querySelectorAll(".dur button").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+      reset();
+    });
+  });
+  document.querySelectorAll(".dur button").forEach((x) => x.setAttribute("aria-checked", String(Number(x.dataset.sec) === total)));
+
+  const cats = [...document.querySelectorAll(".cat[data-cat]")];
+  function pickCat(btn) {
+    cats.forEach((c) => c.setAttribute("aria-checked", String(c === btn)));
+    $("catLabel").textContent = btn.dataset.cat;
+  }
+  cats.forEach((c) => c.addEventListener("click", () => pickCat(c)));
+  $("diceBtn").addEventListener("click", () => {
+    ensureAudio();
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const target = cats[Math.floor(Math.random() * cats.length)];
+    if (reduce) return pickCat(target);
+    let i = 0, steps = 9 + cats.indexOf(target);
+    const spin = () => {
+      pickCat(cats[i % cats.length]);
+      beep(500 + (i % 3) * 120, 0.04, 0, 0.1, "triangle");
+      if (i++ < steps) setTimeout(spin, 50 + i * 12);
+      else pickCat(target);
+    };
+    spin();
+  });
+
+  function setSound(on) {
+    sound = on; store.set("sound", on);
+    $("soundBtn").setAttribute("aria-pressed", String(on));
+    show($("soundOn"), on); show($("soundOff"), !on);
+  }
+  $("soundBtn").addEventListener("click", () => { ensureAudio(); setSound(!sound); });
+  setSound(sound);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.code === "Space" && e.target === document.body) { e.preventDefault(); toggle(); }
+    if (e.key === "Escape" && !doneEl.hidden) doneEl.click();
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && running) { lockScreen(); loop(); }
+  });
+
+  remaining = total * 1000;
+  render();
+})();
+</script>
