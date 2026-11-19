@@ -180,13 +180,28 @@
   [aria-checked="true"] > .switch { background: var(--ok); }
   [aria-checked="true"] > .switch::after { transform: translateX(20px); }
 
-  .rules { border-radius: 14px; background: var(--surface); border: 1px solid var(--line); }
-  .rules summary { padding: 14px; font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
-  .rules summary::-webkit-details-marker { display: none; }
-  .rules summary::after { content: "+"; font-family: var(--font-display); font-size: 20px; line-height: 1; color: var(--muted); }
-  .rules[open] summary::after { content: "–"; }
-  .rules ol { margin: 0; padding: 0 16px 16px 34px; display: grid; gap: 8px; color: var(--muted); }
-  .rules b { color: var(--ink); }
+  .pill-btn { height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-weight: 600; font-size: 14px; cursor: pointer; }
+  .pill-btn svg { width: 20px; height: 20px; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .opt { display: grid; align-content: start; gap: 4px; padding: 12px; text-align: left; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; }
+  .opt b { font-size: 15px; }
+  .opt small { color: var(--muted); font-size: 12.5px; line-height: 1.35; }
+  .opt[aria-checked="true"] { border: 2px solid var(--accent); padding: 11px; }
+  .opt[aria-checked="true"] b { color: var(--accent); }
+  .modes.locked { grid-template-columns: repeat(3, 1fr); }
+  .chip[disabled] { cursor: default; opacity: .45; }
+  .chip[disabled][aria-checked="true"] { opacity: 1; }
+  .rules-sheet { gap: 18px; }
+  .rules-sheet section { display: grid; gap: 6px; }
+  .rules-sheet section .h { margin-bottom: 0; }
+  .rules-sheet p, .rule-list { color: var(--ink); max-width: 62ch; }
+  .rule-list { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+  .rule-modes { display: grid; gap: 8px; }
+  .rule-mode { display: flex; gap: 12px; padding: 12px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); }
+  .rule-mode .rm-icon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--accent); color: var(--on-color); flex: none; }
+  .rule-mode .rm-icon svg { width: 20px; height: 20px; }
+  .rule-mode div { min-width: 0; }
+  .rule-mode p { color: var(--muted); font-size: 14px; }
 
   /* Whose turn */
   .who { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 18px; background: var(--team); color: var(--on-color); }
@@ -354,9 +369,21 @@
 (() => {
   // ---------------------------------------------------------------- Begriffe
   const WORDS = {
-    1: ["Apfel","Banane","Fahrrad","Hund","Katze","Haus","Auto","Sonne","Regenschirm","Zahnbürste","Brille","Schlüssel","Baum","Blume","Fisch","Vogel","Schneemann","Pizza","Fußball","Buch","Telefon","Uhr","Schuh","Hut","Kerze","Stuhl","Bett","Fenster","Zug","Flugzeug","Schiff","Mond","Stern","Wolke","Regen","Eis","Kuchen","Geburtstag","Gitarre","Klavier","Trommel","Elefant","Giraffe","Schlange","Spinne","Biene","Schmetterling","Pferd","Kuh","Schwein","Huhn","Ei","Brot","Käse","Kaffee","Löffel","Gabel","Tasse","Lampe","Fernseher","Kamera","Rakete","Burg","Krone","König","Pirat","Zauberer","Clown","Arzt","Polizist","Feuerwehr","Leiter","Hammer","Schere","Kamm","Spiegel","Dusche","Badewanne","Zelt","Berg","Strand","Insel","Brücke","Ampel","Schaukel","Rutsche","Drachen","Herz","Geschenk","Tannenbaum","Kürbis","Karotte","Erdbeere","Zitrone","Hamburger","Popcorn","Schwimmen","Schlafen","Tanzen","Lachen","Weinen","Springseil","Koffer","Briefkasten","Hexenbesen","Bagger"],
-    2: ["Achterbahn","Leuchtturm","Staubsauger","Waschmaschine","Feuerwerk","Taschenlampe","Fallschirm","Zahnarzt","Friseur","Bäckerei","Zirkus","Wohnwagen","Hochzeit","Picknick","Schneeballschlacht","Sandburg","Seifenblase","Regenbogen","Gewitter","Vulkan","Wasserfall","Wüste","Dschungel","Iglu","Pinguin","Känguru","Krokodil","Eichhörnchen","Fledermaus","Schildkröte","Tintenfisch","Hai","Einhorn","Roboter","Astronaut","Detektiv","Ritter","Hexe","Gespenst","Vampir","Superheld","Bergsteiger","Taucher","Skifahren","Surfen","Bowling","Tischtennis","Elfmeter","Marathon","Gewichtheben","Yoga","Zähneputzen","Rasenmähen","Bügeln","Abwaschen","Einkaufswagen","Umzug","Stau","Tankstelle","Flughafen","Bahnhof","Kino","Museum","Bibliothek","Krankenhaus","Gefängnis","Schatzkarte","Wecker","Kopfhörer","Selfie","Fernbedienung","Ladekabel","Kreuzworträtsel","Puzzle","Schach","Würfel","Zauberstab","Schneekugel","Weihnachtsmann","Osterhase","Kuckucksuhr","Gartenzwerg","Hängematte","Lagerfeuer","Mückenstich","Sonnenbrand","Schluckauf","Niesen","Gähnen","Muskelkater","Karussell","Rolltreppe","Aufzug","Trampolin","Geisterbahn","Kaugummi","Zuckerwatte","Spaghetti","Fondue","Sauna"],
-    3: ["Eifersucht","Heimweh","Fernweh","Langeweile","Gerechtigkeit","Freiheit","Demokratie","Erinnerung","Gewissen","Ausrede","Geheimnis","Vorfreude","Lampenfieber","Ohrwurm","Déjà-vu","Zeitumstellung","Schwerkraft","Echo","Spiegelbild","Inflation","Steuererklärung","Bürokratie","Wahlkampf","Klimawandel","Recycling","Homeoffice","Videokonferenz","Passwort","Künstliche Intelligenz","Datenschutz","Influencer","Fake News","Zeitreise","Paralleluniversum","Evolution","Urknall","Schwarzes Loch","Fotosynthese","Ebbe und Flut","Sonnenfinsternis","Polarlicht","Lawine","Erdbeben","Hypnose","Meditation","Midlife-Crisis","Pubertät","Jetlag","Winterschlaf","Mondlandung","Olympische Spiele","Rettungsgasse","Flohmarkt","Speed-Dating","Blind Date","Polterabend","Schnitzeljagd","Stille Post","Reise nach Jerusalem","Kettenreaktion","Dominoeffekt","Teufelskreis","Gänsehaut","Galgenhumor","Schadenfreude","Fremdschämen","Kopfkino","Torschlusspanik","Verschwörungstheorie","Den Nagel auf den Kopf treffen","Tomaten auf den Augen haben","Ins Fettnäpfchen treten","Die Katze im Sack kaufen","Mit dem falschen Fuß aufstehen","Auf Wolke sieben schweben","Schmetterlinge im Bauch","Jemandem einen Bären aufbinden","Das Haar in der Suppe","Wie ein Elefant im Porzellanladen","Die Nadel im Heuhaufen","Zwei Fliegen mit einer Klappe","Ein Brett vor dem Kopf","Kalte Füße bekommen","Luftschlösser bauen","Den Faden verlieren","Aus der Haut fahren","Unter einer Decke stecken","Hals- und Beinbruch","Schnee von gestern","Das fünfte Rad am Wagen","Perlen vor die Säue werfen","Wer zuletzt lacht","Morgenstund hat Gold im Mund","Lügen haben kurze Beine","Kater nach der Party","Sommerschlussverkauf","Weltrekord","Lottogewinn","Generalprobe","Sternschnuppe"]
+    erklaeren: {
+      1: ["Apfel", "Banane", "Brot", "Käse", "Milch", "Kaffee", "Tee", "Schokolade", "Pizza", "Nudeln", "Suppe", "Frühstück", "Kühlschrank", "Herd", "Sofa", "Bett", "Teppich", "Handy", "Fernseher", "Computer", "Zeitung", "Brief", "Schule", "Lehrer", "Arzt", "Krankenhaus", "Supermarkt", "Bäckerei", "Bahnhof", "Flughafen", "Bus", "Fahrrad", "Ampel", "Garten", "Wald", "Meer", "Strand", "Fluss", "Sonne", "Regen", "Schnee", "Winter", "Sommer", "Urlaub", "Geburtstag", "Weihnachten", "Ostern", "Hund", "Katze", "Pferd", "Kuh", "Fußball", "Schwimmbad", "Kino", "Musik", "Familie", "Oma", "Baby", "Geld", "Uhr", "Schlüssel", "Brille", "Jacke", "Zahnbürste", "Seife", "Handtuch", "Hausaufgaben", "Polizei", "Feuerwehr", "Spielplatz", "Kerze", "Regenschirm", "Eis", "Kuchen"],
+      2: ["Achterbahn", "Leuchtturm", "Staubsauger", "Waschmaschine", "Spülmaschine", "Feuerwerk", "Taschenlampe", "Fallschirm", "Wohnwagen", "Hochzeit", "Picknick", "Zirkus", "Museum", "Bibliothek", "Gefängnis", "Rathaus", "Tankstelle", "Baustelle", "Kreisverkehr", "Einbahnstraße", "Autobahn", "Reisepass", "Fundbüro", "Kreuzfahrt", "Jugendherberge", "Klassenfahrt", "Zeugnis", "Bewerbung", "Mietvertrag", "Hausmeister", "Babysitter", "Weihnachtsmarkt", "Karneval", "Silvester", "Adventskalender", "Gartenzwerg", "Kuckucksuhr", "Hängematte", "Lagerfeuer", "Muskelkater", "Sonnenbrand", "Schluckauf", "Mückenstich", "Erkältung", "Impfung", "Gewitter", "Regenbogen", "Vulkan", "Wüste", "Gletscher", "Chamäleon", "Faultier", "Eichhörnchen", "Känguru", "Einhorn", "Vampir", "Detektiv", "Astronaut", "Schiedsrichter", "Elfmeter", "Marathon", "Schach", "Kreuzworträtsel", "Fernbedienung", "Ladekabel", "Drucker", "Thermoskanne", "Wärmflasche", "Gummibärchen", "Brezel", "Currywurst", "Flohmarkt", "Trampolin", "Rolltreppe", "Navi"],
+      3: ["Eifersucht", "Heimweh", "Fernweh", "Langeweile", "Gerechtigkeit", "Freiheit", "Demokratie", "Erinnerung", "Gewissen", "Ausrede", "Geheimnis", "Vorfreude", "Lampenfieber", "Ohrwurm", "Déjà-vu", "Zeitumstellung", "Schwerkraft", "Inflation", "Steuererklärung", "Bürokratie", "Wahlkampf", "Klimawandel", "Nachhaltigkeit", "Algorithmus", "Künstliche Intelligenz", "Datenschutz", "Influencer", "Fake News", "Paralleluniversum", "Evolution", "Urknall", "Fotosynthese", "Midlife-Crisis", "Pubertät", "Jetlag", "Kettenreaktion", "Teufelskreis", "Galgenhumor", "Schadenfreude", "Fremdschämen", "Kopfkino", "Torschlusspanik", "Verschwörungstheorie", "Innerer Schweinehund", "Kummerspeck", "Weltschmerz", "Feierabend", "Zeitgeist", "Fingerspitzengefühl", "Verschlimmbessern", "Treppenwitz", "Sitzfleisch", "Den Nagel auf den Kopf treffen", "Tomaten auf den Augen haben", "Ins Fettnäpfchen treten", "Die Katze im Sack kaufen", "Jemandem einen Bären aufbinden", "Das Haar in der Suppe", "Eulen nach Athen tragen", "Unter einer Decke stecken", "Hals- und Beinbruch", "Schnee von gestern", "Das fünfte Rad am Wagen", "Perlen vor die Säue werfen", "Lügen haben kurze Beine", "Morgenstund hat Gold im Mund", "Generalprobe", "Sommerschlussverkauf", "Gruppenzwang", "Bauchgefühl", "Wohlstand", "Vorurteil"]
+    },
+    zeichnen: {
+      1: ["Haus", "Baum", "Sonne", "Mond", "Stern", "Wolke", "Regen", "Blume", "Herz", "Auto", "Fahrrad", "Zug", "Schiff", "Flugzeug", "Ball", "Hund", "Katze", "Fisch", "Vogel", "Schlange", "Schnecke", "Maus", "Apfel", "Birne", "Banane", "Kirsche", "Karotte", "Pilz", "Eis", "Kuchen", "Brille", "Schlüssel", "Uhr", "Schere", "Löffel", "Tasse", "Lampe", "Kerze", "Brief", "Buch", "Stuhl", "Tisch", "Bett", "Tür", "Leiter", "Hut", "Krone", "Schuh", "Socke", "T-Shirt", "Regenschirm", "Luftballon", "Drachen", "Geschenk", "Tannenbaum", "Schneemann", "Berg", "Insel", "Zelt", "Brücke", "Ampel", "Rakete", "Gitarre", "Glocke", "Anker", "Hammer", "Zahnbürste", "Spinne", "Biene", "Marienkäfer", "Gespenst"],
+      2: ["Staubsauger", "Waschmaschine", "Feuerwehrauto", "Feuerwehrmann", "Fußballstadion", "Leuchtturm", "Windmühle", "Achterbahn", "Riesenrad", "Zirkuszelt", "Burg", "Pyramide", "Iglu", "Wohnwagen", "Hubschrauber", "U-Boot", "Traktor", "Bagger", "Kran", "Segelboot", "Heißluftballon", "Fallschirm", "Roboter", "Astronaut", "Ritter", "Pirat", "Meerjungfrau", "Einhorn", "Dinosaurier", "Pinguin", "Giraffe", "Krokodil", "Schildkröte", "Tintenfisch", "Igel", "Eule", "Fledermaus", "Spinnennetz", "Schmetterling", "Regenbogen", "Vulkan", "Wasserfall", "Gewitter", "Kaktus", "Palme", "Sandburg", "Schatzkiste", "Schatzkarte", "Sanduhr", "Wecker", "Kopfhörer", "Fernseher", "Briefkasten", "Gießkanne", "Schubkarre", "Vogelscheuche", "Gartenzwerg", "Hängematte", "Lagerfeuer", "Badewanne", "Kühlschrank", "Bügeleisen", "Teekanne", "Geburtstagstorte", "Hamburger", "Spiegelei", "Zuckerwatte", "Sonnenbrille", "Skateboard", "Basketballkorb", "Schneeballschlacht", "Dusche"],
+      3: ["Schneekugel", "Zeitverschiebung", "Klimaanlage", "Zeitreise", "Schwerkraft", "Echo", "Spiegelbild", "Schatten", "Stromausfall", "Erdbeben", "Sonnenfinsternis", "Polarlicht", "Ebbe und Flut", "Klimawandel", "Recycling", "Evolution", "Schwarzes Loch", "WLAN", "Passwort", "Homeoffice", "Videokonferenz", "Stau", "Rettungsgasse", "Kreisverkehr", "Einbahnstraße", "Drehtür", "Kettenreaktion", "Dominoeffekt", "Ohrwurm", "Kopfschmerzen", "Heimweh", "Liebeskummer", "Langeweile", "Muskelkater", "Gänsehaut", "Albtraum", "Weltrekord", "Lottogewinn", "Mondlandung", "Olympische Spiele", "Flohmarkt", "Tomaten auf den Augen", "Schmetterlinge im Bauch", "Ein Brett vor dem Kopf", "Die Katze im Sack kaufen", "Zwei Fliegen mit einer Klappe", "Luftschlösser bauen", "Den Nagel auf den Kopf treffen", "Wolf im Schafspelz", "Fisch auf dem Trockenen", "Schwein haben", "Hahn im Korb", "Glückspilz", "Pechvogel", "Bücherwurm", "Nachteule", "Morgenmuffel", "Angsthase", "Seifenoper", "Sternzeichen", "Wetterbericht", "Fußgängerzone", "Sommerzeit", "Geisterstunde", "Wolkenkratzer", "Zahnfee", "Sandmännchen", "Ohrfeige", "Handschlag", "Taschengeld"]
+    },
+    pantomime: {
+      1: ["Zähneputzen", "Schwimmen", "Fahrradfahren", "Autofahren", "Schlafen", "Essen", "Trinken", "Telefonieren", "Lesen", "Schreiben", "Tanzen", "Springen", "Klatschen", "Winken", "Weinen", "Lachen", "Gähnen", "Niesen", "Duschen", "Haare kämmen", "Schuhe binden", "Kochen", "Abwaschen", "Staubsaugen", "Fegen", "Bügeln", "Malen", "Singen", "Gitarre spielen", "Klavier spielen", "Trommeln", "Fußball spielen", "Boxen", "Joggen", "Angeln", "Rudern", "Skifahren", "Seilspringen", "Klettern", "Fotografieren", "Einkaufen", "Hund", "Katze", "Affe", "Elefant", "Hase", "Frosch", "Schlange", "Vogel", "Fisch", "Pinguin", "Huhn", "Kuh", "Pferd", "Löwe", "Känguru", "Baby", "Clown", "Polizist", "Koch", "Zauberer", "Pirat", "Roboter", "Geschenk auspacken", "Kuchen backen", "Luftballon aufblasen", "Eis essen", "Regenschirm aufspannen", "Schneemann bauen", "Holz hacken", "Frieren", "Schwitzen"],
+      2: ["Zahnarzt", "Friseur", "Feuerwehrmann", "Bauarbeiter", "Kellner", "Dirigent", "Pilot", "Astronaut", "Taucher", "Chirurg", "Briefträger", "Bodybuilder", "Balletttänzerin", "Tennis", "Golf", "Bowling", "Basketball", "Bogenschießen", "Gewichtheben", "Surfen", "Eiskunstlauf", "Fechten", "Reiten", "Yoga", "Karate", "Fallschirmspringen", "Bergsteigen", "Zelt aufbauen", "Reifen wechseln", "Auto waschen", "Rasen mähen", "Wäsche aufhängen", "Bett beziehen", "Pizza backen", "Spaghetti essen", "Zwiebeln schneiden", "Hochzeit", "Geburtstagsparty", "Picknick", "Schneeballschlacht", "Achterbahn", "Rolltreppe", "Aufzug", "Stau", "Verschlafen", "Mückenstich", "Sonnenbrand", "Schluckauf", "Muskelkater", "Zug verpassen", "Selfie machen", "Videospiel spielen", "Gorilla", "Krake", "Krebs", "Giraffe", "Schildkröte", "Flamingo", "Fledermaus", "Schmetterling", "Spinne", "Krokodil", "Delfin", "Vampir", "Hexe", "Gespenst", "Ritter", "Mumie", "Zombie", "Superheld", "Fenster putzen", "Kaugummi kauen"],
+      3: ["Drehtür", "Waffeleisen", "Kuckucksuhr", "Staubsaugerroboter", "Lavalampe", "Toaster", "Ampel", "Leuchtturm", "Windmühle", "Wecker", "Schneekugel", "Rotkäppchen", "Dornröschen", "Hänsel und Gretel", "Aschenputtel", "Rapunzel", "Schneewittchen", "Titanic", "Der König der Löwen", "Harry Potter", "Frankenstein", "Pinocchio", "Robin Hood", "Tarzan", "Dracula", "Schadenfreude", "Eifersucht", "Heimweh", "Langeweile", "Lampenfieber", "Ohrwurm", "Déjà-vu", "Teufelskreis", "Gänsehaut", "Midlife-Crisis", "Jetlag", "Winterschlaf", "Mondlandung", "Evolution", "Schwerkraft", "Zeitlupe", "Spiegelbild", "Echo", "Vulkanausbruch", "Erdbeben", "Ins Fettnäpfchen treten", "Mit dem falschen Fuß aufstehen", "Auf Wolke sieben schweben", "Kalte Füße bekommen", "Den Faden verlieren", "Aus der Haut fahren", "Die Nadel im Heuhaufen suchen", "Wie ein Elefant im Porzellanladen", "Zwei Fliegen mit einer Klappe", "Luftschlösser bauen", "Blind Date", "Speed-Dating", "Flohmarkt", "Reise nach Jerusalem", "Stille Post", "Rettungsgasse", "Homeoffice", "Videokonferenz", "Fake News", "Bermudadreieck", "Geisterbahn", "Fließband", "Kettenkarussell", "Marionette", "Bauchredner"]
+    }
   };
 
   const ICONS = {
@@ -364,6 +391,8 @@
     zeichnen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/><path d="m14.5 5.5 3 3"/></svg>',
     pantomime: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M5 9l7 1.5L19 9"/><path d="M12 10.5V15l-3 6"/><path d="m12 15 3 6"/></svg>',
     dice: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.5" cy="8.5" r="1.1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.1" fill="currentColor"/><circle cx="12" cy="12" r="1.1" fill="currentColor"/></svg>',
+    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 11.5h5"/></svg>',
+    gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
     menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
     close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
     plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
@@ -377,9 +406,9 @@
   };
 
   const MODES = {
-    erklaeren: { name: "Erklären", rule: "Mit Worten umschreiben. Das Wort selbst, Teile davon und Übersetzungen sind tabu." },
-    zeichnen:  { name: "Zeichnen", rule: "Nur zeichnen, hier auf dem Handy oder auf Papier. Keine Buchstaben, keine Zahlen, nicht sprechen." },
-    pantomime: { name: "Pantomime", rule: "Nur mit dem Körper darstellen. Kein Wort, kein Geräusch, nicht auf Dinge im Raum zeigen." }
+    erklaeren: { name: "Erklären", verb: "erklären", rule: "Mit Worten umschreiben. Das Wort selbst, Teile davon und Übersetzungen sind tabu." },
+    zeichnen:  { name: "Zeichnen", verb: "zeichnen", rule: "Nur zeichnen, hier auf dem Handy oder auf Papier. Keine Buchstaben, keine Zahlen, nicht sprechen." },
+    pantomime: { name: "Pantomime", verb: "spielen Pantomime", rule: "Nur mit dem Körper darstellen. Kein Wort, kein Geräusch, nicht auf Dinge im Raum zeigen." }
   };
   const MODE_KEYS = Object.keys(MODES);
   const LEVELS = { 1: "Leicht", 2: "Mittel", 3: "Schwer" };
@@ -401,14 +430,14 @@
     teams: TEAMS.slice(0, 2).map((t) => ({ ...t, score: 0 })),
     current: 0, round: 1, turnsTaken: 0,
     roundTime: 120, target: 50, openRounds: true, sound: true, cfg: 2,
-    used: { 1: [], 2: [], 3: [] },
+    used: {}, modeRule: "frei",
     turn: null, winner: null
   });
   let state = fresh();
 
   const app = document.getElementById("app");
   const sheet = document.getElementById("sheet");
-  let menuOpen = false, confirmEnd = false, resumeAfterMenu = false;
+  let menuOpen = false, confirmEnd = false, resumeAfterMenu = false, sheetView = "menu";
 
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(snapshot())); } catch {}
@@ -509,16 +538,20 @@
   function togglePause() { running ? stopTimer() : startTimer(); save(); }
 
   // ---------------------------------------------------------------- Game flow
+  const alternating = () => state.modeRule === "wechsel";
+  const roundMode = (r) => MODE_KEYS[(r - 1) % MODE_KEYS.length];
   function newTurn() {
-    state.turn = { mode: rand(MODE_KEYS), level: 2, word: null, open: false, revealed: false, swapped: false, remaining: state.roundTime * 1000, timeUp: false, lastOpen: false, results: [] };
+    state.turn = { mode: alternating() ? roundMode(state.round) : rand(MODE_KEYS), level: 2, word: null, open: false, revealed: false, swapped: false, remaining: state.roundTime * 1000, timeUp: false, lastOpen: false, results: [] };
     state.turn.open = state.openRounds && state.teams.length > 1 && Math.random() < OPEN_CHANCE;
     state.phase = "turn";
   }
-  function pickWord(level, avoid) {
-    let pool = WORDS[level].filter((w) => !state.used[level].includes(w) && w !== avoid);
-    if (!pool.length) { state.used[level] = []; pool = WORDS[level].filter((w) => w !== avoid); }
+  function pickWord(mode, level, avoid) {
+    const list = WORDS[mode][level], key = mode + level;
+    const used = (state.used[key] = Array.isArray(state.used[key]) ? state.used[key] : []);
+    let pool = list.filter((w) => !used.includes(w) && w !== avoid);
+    if (!pool.length) { used.length = 0; pool = list.filter((w) => w !== avoid); }
     const w = rand(pool);
-    state.used[level].push(w);
+    used.push(w);
     return w;
   }
   function score(idx) {
@@ -536,7 +569,7 @@
   }
   function nextWord() {
     const t = state.turn;
-    t.word = pickWord(t.level, t.word);
+    t.word = pickWord(t.mode, t.level, t.word);
     strokes = [];
     render();
     const p = document.getElementById("peek") || document.getElementById("liveword");
@@ -565,8 +598,10 @@
       newTurn(); render(); window.scrollTo(0, 0);
     },
     // turn
-    mode(m) { state.turn.mode = m; render(); },
+    mode(m) { if (alternating()) return; state.turn.mode = m; render(); },
+    setRule(v) { state.modeRule = v === "wechsel" ? "wechsel" : "frei"; render(); },
     roll() {
+      if (alternating()) return;
       ensureAudio();
       const target = rand(MODE_KEYS);
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) { state.turn.mode = target; return render(); }
@@ -582,7 +617,7 @@
     level(l) { state.turn.level = Number(l); render(); },
     draw() {
       ensureAudio();
-      state.turn.word = pickWord(state.turn.level);
+      state.turn.word = pickWord(state.turn.mode, state.turn.level);
       state.phase = "play"; strokes = [];
       render(); startTimer(); beep(660, 0.08, 0, 0.2);
     },
@@ -617,9 +652,10 @@
     },
     // win
     rematch() { state.teams.forEach((t) => (t.score = 0)); state.current = 0; state.round = 1; state.winner = null; newTurn(); render(); },
-    newGame() { stopTimer(); resumeAfterMenu = false; const keep = { teams: state.teams.map((t) => ({ ...t, score: 0 })), roundTime: state.roundTime, target: state.target, openRounds: state.openRounds, sound: state.sound, used: state.used }; state = { ...fresh(), ...keep }; closeMenu(); render(); },
+    newGame() { stopTimer(); resumeAfterMenu = false; const keep = { teams: state.teams.map((t) => ({ ...t, score: 0 })), roundTime: state.roundTime, target: state.target, openRounds: state.openRounds, sound: state.sound, used: state.used, modeRule: state.modeRule }; state = { ...fresh(), ...keep }; closeMenu(); render(); },
     // menu
-    menu() { if (state.phase === "play" && running) { stopTimer(); resumeAfterMenu = true; } menuOpen = true; confirmEnd = false; renderMenu(); },
+    menu() { if (state.phase === "play" && running) { stopTimer(); resumeAfterMenu = true; } menuOpen = true; confirmEnd = false; sheetView = "menu"; renderMenu(); },
+    rules() { if (state.phase === "play" && running) { stopTimer(); resumeAfterMenu = true; } menuOpen = true; confirmEnd = false; sheetView = "rules"; renderMenu(); sheet.querySelector(".sheet-body").scrollTop = 0; },
     closeMenu() { closeMenu(); if (resumeAfterMenu && state.phase === "play") startTimer(); resumeAfterMenu = false; },
     sound() { ensureAudio(); state.sound = !state.sound; renderMenu(); render(); },
     adj(arg) { const [i, d] = arg.split(":").map(Number); const t = state.teams[i]; t.score = Math.max(0, t.score + d); renderMenu(); if (state.phase !== "play") render(); else save(); },
@@ -631,7 +667,7 @@
   function closeMenu() { menuOpen = false; confirmEnd = false; sheet.hidden = true; sheet.innerHTML = ""; }
 
   // ---------------------------------------------------------------- Views
-  const bar = (sub) => `<header class="bar"><div class="brand">Drei<span>er</span>lei</div><div class="bar-sub">${sub}</div><button class="icon-btn" data-act="menu" aria-label="Menü">${ICONS.menu}</button></header>`;
+  const bar = (sub) => `<header class="bar"><div class="brand">Drei<span>er</span>lei</div><div class="bar-sub">${sub}</div><button class="icon-btn" data-act="rules" aria-label="Spielregeln">${ICONS.book}</button><button class="icon-btn" data-act="menu" aria-label="Menü">${ICONS.menu}</button></header>`;
   const scoreboard = (sorted) => {
     const list = state.teams.map((t, i) => ({ t, i }));
     if (sorted) list.sort((a, b) => b.t.score - a.t.score);
@@ -653,7 +689,7 @@
   const views = {
     setup() {
       return `
-      <div class="bar"><div class="grow"></div><button class="icon-btn" data-act="menu" aria-label="Einstellungen">${ICONS.menu}</button></div>
+      <div class="bar"><div class="grow"></div><button class="pill-btn" data-act="rules">${ICONS.book}Spielregeln</button><button class="icon-btn" data-act="menu" aria-label="Einstellungen">${ICONS.gear}</button></div>
       <div class="hero">
         <h1 class="title">Drei<span>er</span>lei</h1>
         <div class="tagline"><span>Erklären</span><span>Zeichnen</span><span>Pantomime</span></div>
@@ -670,22 +706,19 @@
           ${state.teams.length < 6 ? `<button class="btn btn-ghost add" data-act="addTeam">${ICONS.plus} Team hinzufügen</button>` : ""}
         </div>
       </section>
+      <section>
+        <h2 class="h">Spielmodus</h2>
+        <div class="opts" role="radiogroup">
+          <button class="opt" role="radio" id="rule-frei" aria-checked="${!alternating()}" data-act="setRule" data-arg="frei"><b>Frei wählen</b><small>Jedes Team wählt die Darstellung selbst oder würfelt.</small></button>
+          <button class="opt" role="radio" id="rule-wechsel" aria-checked="${alternating()}" data-act="setRule" data-arg="wechsel"><b>Immer abwechseln</b><small>Jede Runde eine andere: Erklären, Zeichnen, Pantomime.</small></button>
+        </div>
+      </section>
       <section><h2 class="h">Zeit pro Runde</h2>${stepper("roundTime", "Sekunden", 10, "setTime", [60, 90, 120, 180])}</section>
       <section><h2 class="h">Punkte zum Sieg</h2>${stepper("target", "Punkte", 5, "setTarget", [30, 50, 80, 100])}</section>
       <button class="switch-row" id="openRounds" role="switch" aria-checked="${state.openRounds}" data-act="toggleOpen">
         <div><b>Offene Runden</b><small>Ab und zu dürfen alle Teams mitraten. Jeder Begriff zählt für das Team, das ihn zuerst errät.</small></div>
         <span class="switch"></span>
       </button>
-      <details class="rules" id="rules">
-        <summary>So wird gespielt</summary>
-        <ol>
-          <li>Das Team am Zug wählt die <b>Darstellung</b> (oder würfelt) und die <b>Schwierigkeit</b>: leicht 1, mittel 2, schwer 3 Punkte.</li>
-          <li>Eine Person aus dem Team nimmt das Handy und tippt auf <b>Aufdecken &amp; los</b>: Der erste Begriff erscheint und die Zeit läuft.</li>
-          <li>Dann läuft die Zeit: <b>erklären</b>, <b>zeichnen</b> oder <b>pantomimisch</b> darstellen. Das eigene Team rät <b>so viele Begriffe wie möglich</b>.</li>
-          <li>Jeder erratene Begriff bringt die Punkte seiner Stufe, danach kommt sofort der nächste. Beim Erklären steht der Begriff auf dem Bildschirm, beim Zeichnen und bei Pantomime sieht man ihn, solange man den Knopf gedrückt hält. Überspringen kostet keine Punkte, nur Zeit.</li>
-          <li>Danach ist das nächste Team dran, am besten mit einer anderen Person. Das erste Team mit der Zielpunktzahl gewinnt sofort.</li>
-        </ol>
-      </details>
       <button class="btn btn-primary" data-act="start">Spiel starten</button>`;
     },
 
@@ -693,18 +726,23 @@
       const t = team(), tr = state.turn;
       const need = Math.max(0, state.target - t.score);
       return `
-      ${bar("Runde " + state.round)}
+      ${bar("Runde " + state.round + (alternating() ? " · " + MODES[state.turn.mode].name : ""))}
       <div class="who t-${t.c}">
         <div><p class="eyebrow">Am Zug</p><h2>${esc(t.name)}</h2></div>
         <div class="need"><b>${need}</b>bis zum Ziel</div>
       </div>
       <section>
         <h3 class="h">Darstellung</h3>
-        <div class="modes" role="radiogroup">
-          ${MODE_KEYS.map((m) => `<button class="chip" role="radio" id="mode-${m}" aria-checked="${tr.mode === m}" data-act="mode" data-arg="${m}">${ICONS[m]}${MODES[m].name}</button>`).join("")}
-          <button class="chip dice" data-act="roll" aria-label="Darstellung auswürfeln">${ICONS.dice}Würfeln</button>
-        </div>
-        <p class="rule" style="margin-top:8px">${MODES[tr.mode].rule}</p>
+        ${alternating()
+          ? `<div class="modes locked" role="radiogroup" aria-label="Darstellung ist vorgegeben">
+              ${MODE_KEYS.map((m) => `<button class="chip" role="radio" id="mode-${m}" aria-checked="${tr.mode === m}" disabled>${ICONS[m]}${MODES[m].name}</button>`).join("")}
+            </div>
+            <p class="rule" style="margin-top:8px"><b>Runde ${state.round}: Alle Teams ${MODES[tr.mode].verb}.</b> Nächste Runde: ${MODES[roundMode(state.round + 1)].name}.<br>${MODES[tr.mode].rule}</p>`
+          : `<div class="modes" role="radiogroup">
+              ${MODE_KEYS.map((m) => `<button class="chip" role="radio" id="mode-${m}" aria-checked="${tr.mode === m}" data-act="mode" data-arg="${m}">${ICONS[m]}${MODES[m].name}</button>`).join("")}
+              <button class="chip dice" data-act="roll" aria-label="Darstellung auswürfeln">${ICONS.dice}Würfeln</button>
+            </div>
+            <p class="rule" style="margin-top:8px">${MODES[tr.mode].rule}</p>`}
       </section>
       <section>
         <h3 class="h">Schwierigkeit</h3>
@@ -809,8 +847,47 @@
     }
   };
 
+  function rulesView() {
+    const time = state.roundTime >= 60 ? fmt(state.roundTime * 1000) + " Minuten" : state.roundTime + " Sekunden";
+    return `
+      <div class="sheet-body rules-sheet" role="dialog" aria-label="Spielregeln">
+        <div class="bar"><h2 class="grow">Spielregeln</h2><button class="icon-btn" data-act="closeMenu" aria-label="Schließen">${ICONS.close}</button></div>
+        <section><h3 class="h">Ziel</h3>
+          <p>Die Teams erraten Begriffe, die eine Person aus dem eigenen Team <b>erklärt</b>, <b>zeichnet</b> oder als <b>Pantomime</b> vorspielt. Das erste Team mit ${state.target} Punkten gewinnt sofort.</p>
+        </section>
+        <section><h3 class="h">Ein Zug</h3>
+          <ol class="rule-list">
+            <li>Das Team am Zug wählt die Darstellung (oder würfelt) und die Schwierigkeit. Im Modus <b>Immer abwechseln</b> ist die Darstellung vorgegeben.</li>
+            <li>Eine Person aus dem Team nimmt das Handy und tippt auf <b>Aufdecken &amp; los</b>. Der erste Begriff erscheint, die Zeit läuft (${time}).</li>
+            <li>Das eigene Team rät so viele Begriffe wie möglich. <b>Erraten!</b> gibt die Punkte und zeigt sofort den nächsten Begriff. <b>Überspringen</b> kostet keine Punkte, nur Zeit.</li>
+            <li>Ist die Zeit um, zählt der letzte Begriff nur, wenn er noch rechtzeitig erraten wurde. Dann ist das nächste Team dran, am besten mit einer anderen Person.</li>
+          </ol>
+        </section>
+        <section><h3 class="h">Die drei Darstellungen</h3>
+          <div class="rule-modes">
+            ${MODE_KEYS.map((m) => `<div class="rule-mode"><span class="rm-icon">${ICONS[m]}</span><div><b>${MODES[m].name}</b><p>${MODES[m].rule} ${m === "erklaeren" ? "Der Begriff steht offen auf dem Bildschirm." : "Den Begriff sieht man, solange man den Knopf gedrückt hält."}</p></div></div>`).join("")}
+          </div>
+        </section>
+        <section><h3 class="h">Schwierigkeit und Punkte</h3>
+          <p>Jeder Begriff zählt <b>1 Punkt</b> (leicht), <b>2 Punkte</b> (mittel) oder <b>3 Punkte</b> (schwer). Für jede Darstellung gibt es eigene Begriffe: Leicht ist sofort erkennbar, mittel braucht mehrere Schritte, schwer sind abstrakte Begriffe, Märchen, Filme und Redewendungen.</p>
+        </section>
+        <section><h3 class="h">Spielmodi</h3>
+          <p><b>Frei wählen:</b> Jedes Team sucht sich die Darstellung vor seinem Zug aus oder würfelt.</p>
+          <p><b>Immer abwechseln:</b> Runde 1 wird erklärt, Runde 2 gezeichnet, Runde 3 pantomimisch gespielt, danach geht es von vorn los. In jeder Runde ist jedes Team einmal dran.</p>
+        </section>
+        <section><h3 class="h">Offene Runden</h3>
+          <p>Ist die Einstellung an, dürfen etwa in jedem sechsten Zug alle Teams mitraten. Statt „Erraten!“ gibt es dann einen Knopf pro Team: Wer einen Begriff zuerst errät, bekommt die Punkte.</p>
+        </section>
+        <section><h3 class="h">Gut zu wissen</h3>
+          <p>Ein Tipp auf den Timer pausiert die Runde. Im Menü lassen sich Punkte korrigieren und Runden vorzeitig beenden. Der Spielstand bleibt erhalten, auch wenn die Seite neu geladen wird.</p>
+        </section>
+        <button class="btn btn-primary" data-act="closeMenu">${state.phase === "play" ? "Weiterspielen" : "Verstanden"}</button>
+      </div>`;
+  }
+
   function renderMenu() {
     if (!menuOpen) return;
+    if (sheetView === "rules") { sheet.innerHTML = rulesView(); sheet.hidden = false; return; }
     const inGame = state.phase !== "setup";
     sheet.innerHTML = `
       <div class="sheet-body" role="dialog" aria-label="Menü">
@@ -825,9 +902,7 @@
               <button class="icon-btn" data-act="adj" data-arg="${i}:-1" aria-label="Minus">−</button><b>${t.score}</b><button class="icon-btn" data-act="adj" data-arg="${i}:1" aria-label="Plus">+</button>
             </div>`).join("")}</div>
         </section>
-        <section class="panel"><h3 class="h">Regeln kurz</h3>
-          <p class="muted"><b>Erklären:</b> ${MODES.erklaeren.rule}<br><b>Zeichnen:</b> ${MODES.zeichnen.rule}<br><b>Pantomime:</b> ${MODES.pantomime.rule}</p>
-        </section>
+        <button class="btn btn-ghost" data-act="rules">${ICONS.book} Spielregeln</button>
         ${state.phase === "play" ? `<button class="btn btn-ghost" data-act="stopRound">Runde jetzt beenden</button>` : ""}
         <button class="btn btn-ghost${confirmEnd ? " danger" : ""}" data-act="endGame">${confirmEnd ? "Wirklich beenden? Nochmal tippen" : "Spiel beenden"}</button>` : ""}
         <button class="btn btn-primary" data-act="closeMenu">${state.phase === "play" ? "Weiterspielen" : "Schließen"}</button>
