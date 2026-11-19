@@ -120,8 +120,8 @@
   .btn-team { background: var(--team); color: var(--on); }
   .btn-secondary { background: var(--surface); color: var(--ink); box-shadow: var(--lift); }
   .btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .row { display: grid; grid-template-columns: 1fr 1.6fr; gap: var(--s-3); }
-  .row-even { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: var(--s-3); }
+  .row-even { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-3); }
   .foot { display: grid; gap: var(--s-2); }
   .foot.sticky { position: sticky; bottom: 0; z-index: 2; margin-bottom: calc(-1 * var(--s-5)); padding-block: var(--s-3) var(--s-5); background: linear-gradient(to bottom, transparent, var(--bg) var(--s-3)); }
   .handoff-hint { display: flex; align-items: center; justify-content: center; gap: var(--s-2); color: var(--ink-3); font-size: var(--fs-s); }
@@ -284,6 +284,10 @@
   .card-bot { transform: rotate(180deg); opacity: .8; }
   .card-word { position: relative; display: block; max-width: 100%; margin: auto 0; text-align: center; font-size: var(--fs-xl); font-weight: var(--w-2); line-height: 1.02; letter-spacing: -0.02em; text-wrap: balance; overflow-wrap: normal; }
   .play-card { flex: 1; }
+  .taboo { position: relative; display: grid; justify-items: center; gap: var(--s-1); }
+  .taboo-label { font-size: var(--fs-s); opacity: .8; }
+  .taboo-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .taboo-list span { padding: 2px var(--s-2); border-radius: 8px; background: rgb(255 255 255 / .2); font-size: var(--fs-s); font-weight: var(--w-2); }
   .deal { animation: deal .3s cubic-bezier(.2,.8,.2,1); }
   @keyframes deal { from { transform: translateX(40px) rotate(4deg); opacity: 0; } }
 
@@ -413,6 +417,9 @@
     *, *::before, *::after { animation: none !important; transition: none !important; }
   }
   @media (max-width: 360px) {
+    .btn { padding: 0 var(--s-3); }
+    .row, .row-even { gap: var(--s-2); }
+    .row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
     .pill-btn span { display: none; }
     .pill-btn { width: 44px; padding: 0; justify-content: center; }
   }
@@ -454,6 +461,8 @@
     }
   };
 
+  const TABU = {"Achterbahn": ["Freizeitpark", "Looping", "schnell"], "Leuchtturm": ["Meer", "Licht", "Schiff"], "Staubsauger": ["Dreck", "putzen", "Teppich"], "Waschmaschine": ["Wäsche", "Kleidung", "schleudern"], "Spülmaschine": ["Geschirr", "Küche", "sauber"], "Feuerwerk": ["Silvester", "Rakete", "knallen"], "Taschenlampe": ["Licht", "dunkel", "Batterie"], "Fallschirm": ["springen", "Flugzeug", "Himmel"], "Wohnwagen": ["Camping", "Urlaub", "Anhänger"], "Hochzeit": ["Braut", "heiraten", "Ring"], "Picknick": ["Decke", "Korb", "Wiese"], "Zirkus": ["Clown", "Manege", "Zelt"], "Museum": ["Kunst", "Ausstellung", "Bilder"], "Bibliothek": ["Bücher", "ausleihen", "lesen"], "Gefängnis": ["Verbrecher", "Zelle", "Strafe"], "Rathaus": ["Bürgermeister", "Stadt", "Amt"], "Tankstelle": ["Benzin", "Auto", "Diesel"], "Baustelle": ["Bagger", "Kran", "Helm"], "Kreisverkehr": ["Auto", "rund", "Ausfahrt"], "Einbahnstraße": ["Richtung", "Schild", "Auto"], "Autobahn": ["schnell", "Stau", "Fahrspur"], "Reisepass": ["Ausweis", "Grenze", "Foto"], "Fundbüro": ["verloren", "gefunden", "abgeben"], "Kreuzfahrt": ["Schiff", "Meer", "Urlaub"], "Jugendherberge": ["Übernachtung", "Schlafsaal", "günstig"], "Klassenfahrt": ["Schule", "Lehrer", "Reise"], "Zeugnis": ["Noten", "Schule", "Halbjahr"], "Bewerbung": ["Job", "Lebenslauf", "Arbeit"], "Mietvertrag": ["Wohnung", "unterschreiben", "Vermieter"], "Hausmeister": ["Schule", "reparieren", "Gebäude"], "Babysitter": ["Kind", "aufpassen", "Eltern"], "Weihnachtsmarkt": ["Glühwein", "Dezember", "Bude"], "Karneval": ["Kostüm", "Fasching", "verkleiden"], "Silvester": ["Neujahr", "Feuerwerk", "Mitternacht"], "Adventskalender": ["Türchen", "Dezember", "Schokolade"], "Gartenzwerg": ["Mütze", "Figur", "klein"], "Kuckucksuhr": ["Schwarzwald", "Vogel", "Zeit"], "Hängematte": ["schaukeln", "Bäume", "liegen"], "Lagerfeuer": ["Holz", "Flammen", "Stockbrot"], "Muskelkater": ["Sport", "Schmerzen", "Training"], "Sonnenbrand": ["Haut", "rot", "Strand"], "Schluckauf": ["hicks", "Zwerchfell", "trinken"], "Mückenstich": ["jucken", "Insekt", "Sommer"], "Erkältung": ["Schnupfen", "Husten", "krank"], "Impfung": ["Spritze", "Arzt", "Virus"], "Gewitter": ["Blitz", "Donner", "Regen"], "Regenbogen": ["Farben", "Sonne", "bunt"], "Vulkan": ["Lava", "Ausbruch", "Berg"], "Wüste": ["Sand", "heiß", "Kamel"], "Gletscher": ["Eis", "Berg", "schmelzen"], "Chamäleon": ["Farbe", "Echse", "tarnen"], "Faultier": ["langsam", "Baum", "schlafen"], "Eichhörnchen": ["Nüsse", "Baum", "Schwanz"], "Känguru": ["Australien", "springen", "Beutel"], "Einhorn": ["Pferd", "Regenbogen", "Fabelwesen"], "Vampir": ["Blut", "Zähne", "Dracula"], "Detektiv": ["Fall", "ermitteln", "Sherlock"], "Astronaut": ["Weltall", "Rakete", "Mond"], "Schiedsrichter": ["Pfeife", "Fußball", "Regeln"], "Elfmeter": ["Tor", "Fußball", "Schuss"], "Marathon": ["laufen", "Kilometer", "Rennen"], "Schach": ["König", "Brett", "Dame"], "Kreuzworträtsel": ["Kästchen", "Buchstaben", "lösen"], "Fernbedienung": ["Knopf", "Sofa", "umschalten"], "Ladekabel": ["Handy", "Strom", "Akku"], "Drucker": ["Papier", "Tinte", "Computer"], "Thermoskanne": ["Kaffee", "warm", "Tee"], "Wärmflasche": ["Bett", "heiß", "Wasser"], "Gummibärchen": ["süß", "Tüte", "bunt"], "Brezel": ["Bayern", "Salz", "Bäcker"], "Currywurst": ["Ketchup", "Pommes", "Imbiss"], "Flohmarkt": ["gebraucht", "verkaufen", "Stand"], "Trampolin": ["springen", "hüpfen", "Garten"], "Rolltreppe": ["Kaufhaus", "Stufen", "fahren"], "Navi": ["Auto", "Weg", "Karte"], "Eifersucht": ["Liebe", "Partner", "neidisch", "Angst", "Beziehung"], "Heimweh": ["Zuhause", "vermissen", "Familie", "traurig", "Ferne"], "Fernweh": ["reisen", "Urlaub", "Sehnsucht", "weit", "Welt"], "Langeweile": ["öde", "Zeit", "gähnen", "nichts", "Spaß"], "Gerechtigkeit": ["fair", "Justiz", "Gericht", "gleich", "Strafe"], "Freiheit": ["Gefängnis", "Wahl", "unabhängig", "Menschenrecht", "Fesseln"], "Demokratie": ["Wahl", "Volk", "Politik", "Regierung", "Stimme"], "Erinnerung": ["Gedächtnis", "Vergangenheit", "denken", "vergessen", "Foto"], "Gewissen": ["schlecht", "Moral", "schuldig", "Stimme", "Gefühl"], "Ausrede": ["Lüge", "Entschuldigung", "Grund", "Schuld", "erfinden"], "Geheimnis": ["verraten", "niemand", "flüstern", "versteckt", "sagen"], "Vorfreude": ["warten", "Geschenk", "Weihnachten", "Spannung", "bald"], "Lampenfieber": ["Bühne", "nervös", "Auftritt", "Angst", "Publikum"], "Ohrwurm": ["Lied", "Kopf", "Melodie", "hören", "summen"], "Déjà-vu": ["Gefühl", "erlebt", "wiederholen", "bekannt", "Moment"], "Zeitumstellung": ["Uhr", "Sommer", "Winter", "Stunde", "vorstellen"], "Schwerkraft": ["Erde", "fallen", "Newton", "Apfel", "anziehen"], "Inflation": ["Preise", "Geld", "teurer", "Wirtschaft", "Euro"], "Steuererklärung": ["Finanzamt", "Formular", "Belege", "Geld", "Frist"], "Bürokratie": ["Amt", "Formular", "Papierkram", "Regeln", "Beamte"], "Wahlkampf": ["Plakat", "Partei", "Kandidat", "Stimmen", "Politik"], "Klimawandel": ["Erderwärmung", "CO2", "Wetter", "Temperatur", "Umwelt"], "Nachhaltigkeit": ["Umwelt", "Zukunft", "Ressourcen", "grün", "Recycling"], "Algorithmus": ["Computer", "Programm", "Rechenschritte", "Code", "Anleitung"], "Künstliche Intelligenz": ["Computer", "Roboter", "lernen", "KI", "denken"], "Datenschutz": ["privat", "Internet", "Informationen", "Passwort", "DSGVO"], "Influencer": ["Instagram", "Social Media", "Follower", "Werbung", "Video"], "Fake News": ["falsch", "Nachrichten", "Internet", "Lüge", "Medien"], "Paralleluniversum": ["Welt", "anders", "gleichzeitig", "Science-Fiction", "Dimension"], "Evolution": ["Darwin", "Entwicklung", "Affe", "Mensch", "Art"], "Urknall": ["Universum", "Anfang", "Explosion", "Weltall", "Entstehung"], "Fotosynthese": ["Pflanze", "Licht", "Sauerstoff", "Blatt", "Chlorophyll"], "Midlife-Crisis": ["Alter", "vierzig", "Sportwagen", "Mitte", "Leben"], "Pubertät": ["Jugendliche", "Teenager", "Hormone", "erwachsen", "Pickel"], "Jetlag": ["Zeitzone", "müde", "Flug", "Reise", "Schlaf"], "Kettenreaktion": ["Domino", "auslösen", "nacheinander", "Folge", "Ursache"], "Teufelskreis": ["Problem", "Ausweg", "immer wieder", "schlimmer", "Spirale"], "Galgenhumor": ["Witz", "trotzdem", "lachen", "schlimm", "Lage"], "Schadenfreude": ["lachen", "Pech", "andere", "Missgeschick", "gemein"], "Fremdschämen": ["peinlich", "andere", "Situation", "unangenehm", "rot"], "Kopfkino": ["vorstellen", "Fantasie", "Gedanken", "Film", "Bilder"], "Torschlusspanik": ["Angst", "spät", "Zeit", "verpassen", "Alter"], "Verschwörungstheorie": ["geheim", "glauben", "Lüge", "Mondlandung", "Aluhut"], "Innerer Schweinehund": ["faul", "überwinden", "Sport", "Motivation", "Ausrede"], "Kummerspeck": ["zunehmen", "traurig", "essen", "Trennung", "Gewicht"], "Weltschmerz": ["traurig", "Leid", "Gefühl", "alles", "Melancholie"], "Feierabend": ["Arbeit", "Ende", "nach Hause", "Bier", "Büro"], "Zeitgeist": ["Epoche", "modern", "Gesellschaft", "Trend", "aktuell"], "Fingerspitzengefühl": ["Gespür", "vorsichtig", "sensibel", "Takt", "Situation"], "Verschlimmbessern": ["schlechter", "reparieren", "Versuch", "kaputt", "gut gemeint"], "Treppenwitz": ["später", "Antwort", "einfallen", "zu spät", "Gespräch"], "Sitzfleisch": ["Geduld", "lange", "Stuhl", "Ausdauer", "aushalten"], "Den Nagel auf den Kopf treffen": ["genau", "richtig", "Hammer", "Punkt", "Volltreffer"], "Tomaten auf den Augen haben": ["sehen", "übersehen", "blind", "rot", "Gemüse"], "Ins Fettnäpfchen treten": ["peinlich", "Fehler", "sagen", "unangenehm", "Situation"], "Die Katze im Sack kaufen": ["unbesehen", "Risiko", "Überraschung", "ungeprüft", "Ware"], "Jemandem einen Bären aufbinden": ["lügen", "erzählen", "Geschichte", "glauben", "flunkern"], "Das Haar in der Suppe": ["suchen", "Fehler", "meckern", "kritisieren", "Kleinigkeit"], "Eulen nach Athen tragen": ["überflüssig", "Griechenland", "unnötig", "Vogel", "sinnlos"], "Unter einer Decke stecken": ["zusammen", "heimlich", "Komplize", "verbündet", "Plan"], "Hals- und Beinbruch": ["Glück", "Erfolg", "Wunsch", "Theater", "toi toi toi"], "Schnee von gestern": ["alt", "vorbei", "Vergangenheit", "egal", "veraltet"], "Das fünfte Rad am Wagen": ["überflüssig", "unnötig", "Gruppe", "allein", "stören"], "Perlen vor die Säue werfen": ["wertvoll", "verschwenden", "Schwein", "schätzen", "umsonst"], "Lügen haben kurze Beine": ["Wahrheit", "rauskommen", "Sprichwort", "Pinocchio", "ehrlich"], "Morgenstund hat Gold im Mund": ["früh", "aufstehen", "Sprichwort", "Wecker", "fleißig"], "Generalprobe": ["Theater", "Premiere", "letzte", "Bühne", "üben"], "Sommerschlussverkauf": ["Rabatt", "billig", "Kleidung", "Angebot", "reduziert"], "Gruppenzwang": ["mitmachen", "Freunde", "Druck", "andere", "cool"], "Bauchgefühl": ["Intuition", "Entscheidung", "spüren", "Instinkt", "Ahnung"], "Wohlstand": ["reich", "Geld", "Luxus", "gut", "Wirtschaft"], "Vorurteil": ["Meinung", "Klischee", "falsch", "Schublade", "vorher"]};
+
   const ICONS = {
     erklaeren: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>',
     zeichnen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/><path d="m14.5 5.5 3 3"/></svg>',
@@ -485,7 +494,7 @@
   };
 
   const MODES = {
-    erklaeren: { name: "Erklären", verb: "erklären", rule: "Mit Worten umschreiben. Das Wort selbst, Teile davon und Übersetzungen sind tabu." },
+    erklaeren: { name: "Erklären", verb: "erklären", rule: "Mit Worten umschreiben. Das Wort selbst, Teile davon und Übersetzungen sind tabu. Bei Mittel kommen 3, bei Schwer 5 verbotene Wörter dazu." },
     zeichnen:  { name: "Zeichnen", verb: "zeichnen", rule: "Nur zeichnen, hier auf dem Handy oder auf Papier. Keine Buchstaben, keine Zahlen, nicht sprechen." },
     pantomime: { name: "Pantomime", verb: "spielen Pantomime", rule: "Nur mit dem Körper darstellen. Kein Wort, kein Geräusch, nicht auf Dinge im Raum zeigen." }
   };
@@ -755,7 +764,13 @@
   const MARK = `<span class="mark" aria-hidden="true"><i class="m-erklaeren"></i><i class="m-zeichnen"></i><i class="m-pantomime"></i></span>`;
   const bar = (sub) => `<header class="bar"><div class="brand">${MARK}Dreierlei</div><div class="bar-sub">${sub}</div><button class="icon-btn" data-act="rules" aria-label="Spielregeln">${ICONS.book}</button><button class="icon-btn" data-act="menu" aria-label="Menü">${ICONS.menu}</button></header>`;
   const openBanner = () => `<div class="open-banner">${ICONS.all}<span><b>Offene Runde:</b> Alle Teams raten mit.</span></div>`;
-  const cardFront = (tr) => `<span class="card-top">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span>${pips(tr.level)}</span><span class="card-word fit">${esc(tr.word)}</span><span class="card-bot">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span></span>`;
+  const ruleText = (m, l) => m !== "erklaeren" ? MODES[m].rule
+    : "Mit Worten umschreiben. Das Wort selbst, Teile davon und Übersetzungen sind tabu." + (l > 1 ? ` Dazu stehen ${l === 2 ? 3 : 5} verbotene Wörter auf der Karte.` : "");
+  const tabuFor = (tr) => (tr.mode === "erklaeren" && tr.level > 1 && TABU[tr.word]) || [];
+  const cardFront = (tr) => {
+    const tabu = tabuFor(tr);
+    return `<span class="card-top">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span>${pips(tr.level)}</span><span class="card-word fit">${esc(tr.word)}</span>${tabu.length ? `<span class="taboo"><span class="taboo-label">Nicht sagen</span><span class="taboo-list">${tabu.map((w) => `<span>${esc(w)}</span>`).join("")}</span></span>` : ""}<span class="card-bot">${ICONS[tr.mode]}<span>${MODES[tr.mode].name}</span></span>`;
+  };
   const token = () => `<span class="token" aria-hidden="true"></span>`;
 
   // Board: one lane per team. With `from` (scores at turn start) the pawns walk to their new field.
@@ -839,7 +854,7 @@
           ${MODE_KEYS.map((m) => `<button class="mode m-${m}" role="radio" id="mode-${m}" aria-checked="${tr.mode === m}" ${lock ? "disabled" : `data-act="mode" data-arg="${m}"`}>${ICONS[m]}${MODES[m].name}</button>`).join("")}
           ${lock ? "" : `<button class="mode" data-act="roll" aria-label="Darstellung auswürfeln">${ICONS.dice}Würfeln</button>`}
         </div>
-        <p class="hint-text">${lock ? `<b>Alle Teams ${MODES[tr.mode].verb}.</b> Nächste Runde: ${MODES[roundMode(state.round + 1)].name}. ` : ""}${MODES[tr.mode].rule}</p>
+        <p class="hint-text">${lock ? `<b>Alle Teams ${MODES[tr.mode].verb}.</b> Nächste Runde: ${MODES[roundMode(state.round + 1)].name}. ` : ""}${ruleText(tr.mode, tr.level)}</p>
       </section>
       <section class="group">
         <h3 class="label">Schwierigkeit</h3>
@@ -961,6 +976,7 @@
         </section>
         <section><h3>Schwierigkeit und Punkte</h3>
           <p>Jede Karte zählt <b>1 Punkt</b> (leicht), <b>2 Punkte</b> (mittel) oder <b>3 Punkte</b> (schwer). Für jede Darstellung gibt es eigene Begriffe: Leicht ist sofort erkennbar, mittel braucht mehrere Schritte, schwer sind abstrakte Begriffe, Märchen, Filme und Redewendungen.</p>
+          <p>Beim <b>Erklären</b> stehen auf mittleren Karten <b>3</b> und auf schweren Karten <b>5</b> Wörter, die nicht fallen dürfen. Rutscht eins heraus, ist die Karte verloren: einfach <b>Überspringen</b> tippen.</p>
         </section>
         <section><h3>Spielmodi</h3>
           <p><b>Frei wählen:</b> Jedes Team sucht sich die Darstellung vor seinem Zug aus oder würfelt.</p>
@@ -1007,7 +1023,8 @@
       el.style.fontSize = "";
       let size = parseFloat(getComputedStyle(el).fontSize);
       const lineH = () => parseFloat(getComputedStyle(el).lineHeight) || size * 1.05;
-      const tooBig = () => el.scrollWidth > el.clientWidth + 1 || el.offsetHeight > lineH() * 2 + 2;
+      const card = el.closest(".card");
+      const tooBig = () => el.scrollWidth > el.clientWidth + 1 || el.offsetHeight > lineH() * 2 + 2 || (card && card.scrollHeight > card.clientHeight + 1);
       while (tooBig() && size > 20) { size -= 2; el.style.fontSize = size + "px"; }
       if (tooBig()) el.style.overflowWrap = "anywhere";
     });
